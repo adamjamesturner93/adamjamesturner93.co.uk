@@ -41,7 +41,7 @@ export function Header() {
               Mountaineering
             </Link>
           </li>
-          <li
+          {/* <li
             className={clsx('underline px-2 py-1', {
               'text-zinc-700 bg-zinc-100': isProjectsActive
             })}
@@ -52,7 +52,7 @@ export function Header() {
             >
               Projects
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </header>
