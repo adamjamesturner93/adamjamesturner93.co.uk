@@ -38,6 +38,10 @@ const Home: NextPage<BlogListProps> = ({ blogList }) => {
     <>
       <Head>
         <title>All mountaineering posts | Adam Turner</title>
+        <meta
+          name="description"
+          content="Adam Turners blog and logbook for his mountaineering and climbing experiences"
+        />
       </Head>
       <Layout className="flex-col gap-3">
         <h1 className="font-bold text-xl">All posts</h1>
