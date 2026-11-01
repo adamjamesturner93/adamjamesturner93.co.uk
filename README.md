@@ -1,0 +1,107 @@
+# Adam Turner
+
+A personal engineering leadership publication built with Next.js App Router, TypeScript and Tailwind. Local SVG illustrations, automatically self-hosted Space Grotesk and Geist fonts, repository-managed Markdown/MDX, and no CMS or runtime image/font services.
+
+## Develop and check
+
+Use Node.js 22.13+ or 24+ and npm:
+
+```sh
+npm ci
+npm run dev
+npm run check
+npm run build
+```
+
+Open http://localhost:3000. `npm run check` includes lint, Prettier, TypeScript, content/MDX validation and tests. Builds also validate **all** content, including drafts. `npm run format` and `npm run lint:fix` apply fixes. Husky installs on `npm ci`; pre-commit formats/lints staged files, then runs TypeScript and tests. A Git checkout is required for hooks. Production build validation remains separate. With a server running, `npm run test:http -- http://localhost:3000` checks real routes; set `SMOKE_MODE=production` or `SMOKE_MODE=preview` to match the server configuration.
+
+Development accepts ngrok hostnames under `ngrok-free.app`, `ngrok.app` and `ngrok.io`.
+
+## Create content
+
+```sh
+npm run codegen:blog -- an-interesting-question
+npm run codegen:blog -- an-interesting-question --category technology-strategy
+npm run codegen:speaker -- a-future-talk
+```
+
+The canonical syntax uses `--`; npm also forwards plain positional arguments. Each command creates a draft MDX file in `content/blog/` or `content/speaking/`, plus an original 16:9 SVG in `public/images/<collection>/`. The command prints the preview URL. Invalid slugs, duplicate content or existing artwork fail without overwriting files; partial writes are rolled back.
+
+Blog categories: `engineering-leadership`, `technology-strategy`, `responsible-change`, `people-and-organisations`, `general` (the generator default). Labels live centrally in `lib/content/core.mjs`.
+
+Edit the front matter and body directly. Both `.md` and `.mdx` are discovered automatically, including legacy blog Markdown at the top of `content/`. Keep filenames equal to the front matter slug. Quote ISO calendar dates (`"2026-10-31"`). `date` is creation/draft history, not the public publication date. Cover paths must point to existing local files under `/images/`. Replace artwork in place or update `coverImage`; use `coverImageAlt: ""` for purely decorative illustrations.
+
+MDX is **trusted repository-controlled code**, never a public upload format. It supports Markdown, tables and JSX. For captioned images use:
+
+```mdx
+<Figure
+  src="/images/blog/example.svg"
+  alt="A meaningful description"
+  caption="An optional caption"
+/>
+```
+
+## Preview and publish
+
+- **Local development:** drafts appear by default with clear badges. Pages are non-indexable.
+- **Vercel Preview:** drafts appear only with `ENABLE_DRAFTS=true` in the Preview environment. First enable **Vercel Authentication** and **Standard Protection**, then verify an unauthenticated visitor cannot access the preview. The application cannot verify the dashboard setting, and an environment variable does not authenticate anyone. All preview pages are non-indexable.
+- **Production:** drafts always return 404, including their Open Graph routes. They are excluded from navigation, related articles, RSS and sitemap regardless of preview flags.
+
+To publish a blog entry, finish the text and metadata, remove TODO/scaffold prompts, set `draft: false` and supply `publishedAt: "YYYY-MM-DD"`. `publishedAt` controls public dates and ordering. Future-dated entries are visible in author previews with a scheduled date, but stay hidden publicly until that UTC date; **rebuild on or after the date** to update static pages and feeds. This is not an automatic scheduling service. `updatedAt` is optional. `illustrative: true` keeps a visible sample-article label independently of publication status.
+
+Speaking adds `eventName`, `format` and `status`. Formats: `conference`, `meetup`, `webinar`, `panel`, `workshop`, `other`. Statuses: `proposed`, `submitted`, `confirmed`, `delivered`. A public entry must have `draft: false`, a valid `publishedAt` and `eventDate`, completed required metadata, and status `confirmed` or `delivered`. Optional location, event, slides and recording URLs render only when supplied. Proposed/submitted drafts preview locally but never represent accepted engagements publicly. Speaking navigation appears automatically when visible content exists; an empty public speaking index returns 404. No sample engagements are invented.
+
+Drafts never enter RSS or sitemap, even locally. Artwork in `public/` is always directly accessible, including draft covers. Draft files in a public Git repository are also public. Neither is suitable for confidential information; private media would need separately protected storage.
+
+The three initial articles retain their original text, expanded with hypothetical analysis and verified further reading. They are marked as illustrative samples for substantial author personalisation. Their explicit publication flags and dates remain author-controlled.
+
+## Configuration and eventual Vercel setup
+
+Copy `.env.example` to `.env.local` if needed. Production is indexable automatically: Vercel Production, or NODE_ENV=production outside Vercel. Development and Vercel Preview remain noindex. Use Deployment Protection for private previews; noindex is not access protection.
+
+Site identity, LinkedIn and canonical origin live in `lib/site.mjs`. Generated absolute URLs always use **https://adamjamesturner93.co.uk**, never the request host or preview URL. `/writing` and nested legacy routes permanently redirect to `/blog`.
+
+For eventual hosting, import this directory as a standard Vercel Next.js project and retain the npm build script. Configure `ENABLE_DRAFTS` in the correct environment scopes; changes require a new build. Add `adamjamesturner93.co.uk` as primary and configure `www.adamjamesturner93.co.uk` to redirect to the apex in Vercel domain settings. Use DNS records supplied by Vercel. No deployment, DNS or live Vercel changes are part of this implementation.
+
+## Architecture
+
+- `lib/content/core.mjs` and its TypeScript declarations provide shared validation, automatic discovery, visibility and related-content selection for pages, feeds, generators and tests.
+- `content/blog/` and `content/speaking/` hold author-managed content; `public/images/` holds replaceable artwork.
+- `components/` contains navigation, covers, prose rendering and social image generation. Pages use Server Components, with a small client navigation component for active links and mobile menu closing.
+- `scripts/codegen/` contains deterministic SVG compositions and the transactional CLI. `scripts/validate-content.mjs` validates metadata and compiles MDX before builds.
+
+Useful references: [Vercel Deployment Protection](https://vercel.com/docs/deployment-protection), [Next.js metadata](https://nextjs.org/docs/app/getting-started/metadata-and-og-images).
+
+## Reach, sharing and analytics
+
+Published articles include LinkedIn, WhatsApp, X and email share links, plus copy-link and native sharing on supported browsers. Every share uses the canonical production URL, never a localhost or ngrok URL. Drafts and future-dated entries do not expose share controls. Social links use no embedded SDKs or tracking scripts. Article-specific Open Graph/Twitter metadata and 1200 × 630 PNGs supply link previews.
+
+SEO includes canonical URLs, published-only RSS/sitemap, actual article publication/update dates, author-linked BlogPosting structured data, descriptions and responsive pages. Verify the site in Google Search Console and submit `https://adamjamesturner93.co.uk/sitemap.xml`; this is a separate account task, not performed by the app. For HTML-tag verification, set `GOOGLE_SITE_VERIFICATION` to the verification token (not the complete meta tag), or use Search Console’s domain/DNS method.
+
+Optional GA4 setup: set `GA_MEASUREMENT_ID=G-…` in Production. No tracking or consent banner is enabled without a valid ID in production. Local development and Vercel Preview never load Google Analytics. Visitors must explicitly allow analytics before any Google tag is loaded; rejection loads no Google tag, including cookieless tracking. The choice is saved in local storage. The footer’s cookie preferences can change it; revocation removes this site’s `_ga` cookies and reloads the page. Advertising signals are disabled. The `/privacy` page explains these choices.
+
+In the GA4 web data stream, enable Enhanced measurement → Page views → Page loads and Page changes based on browser history events. This lets GA4 measure Next.js client navigation without a second manual page-view implementation. After connecting the real Measurement ID, verify page views in GA4 Realtime/DebugView. Analytics reports usage; Search Console reports search visibility. Neither integration guarantees rankings. The GA4 property, Search Console ownership, real collection and Vercel environment settings require account access and have not been configured by these source changes.
+
+## Link related articles
+
+Add an optional ordered list to the YAML front matter of any `.md` or `.mdx` blog article:
+
+```yaml
+relatedArticles:
+  - leadership-outside-your-team
+  - legacy-modernisation-business-problem
+```
+
+Use slugs, not URLs or filenames. The article footer shows up to two related articles: your selections first, followed by automatic suggestions based on category and publication recency if fewer than two selections are visible. Draft and scheduled selections only appear in authorised author previews; public pages skip them. Omitting the field or using `relatedArticles: []` keeps automatic suggestions. No reciprocal edit is needed. Validation rejects malformed, duplicate, self-referencing and unknown slugs; links to existing drafts are valid but remain subject to visibility rules. New blog scaffolds include an empty list.
+
+## Themes and cookie testing
+
+The header selector defaults to System and follows operating-system changes. Light/Dark preferences are saved under `adam-theme`; System removes the override. Themes also work without JavaScript using the OS preference.
+
+Run `ANALYTICS_DEMO=true npm run dev` to test the cookie banner locally, including through ngrok. This mode never loads Google scripts and stores choices separately under `adam-analytics-demo-v1`. Use Cookie preferences to reopen it, or clear that localStorage key to reset. Production and Vercel Preview ignore the demonstration flag.
+
+To check real analytics locally, stop the dev server, run `npm run build`, then `npx next start -p 3110` with a valid GA_MEASUREMENT_ID available during the build. Use a separate GA test stream to avoid polluting production reports. Acceptance enables actual Google requests. Verify page views in Realtime/DebugView.
+
+The author confirmed 14-month GA retention. Before launch, confirm the property's reset-on-activity setting and provider log retention/transfer arrangements against the privacy notice. No dashboard settings were changed by this work. LinkedIn remains the privacy contact and requires third-party access; a public email would improve accessibility.
+
+Browser regression tests: install Chromium with `npx playwright install chromium`, start the site, then run `npm run test:browser`. Set `TEST_BASE_URL` for another port. Set `TEST_ANALYTICS=demo` against the local demonstration or `TEST_ANALYTICS=production` against a production build with a GA ID to include consent tests. Google requests are intercepted in these tests. Screenshots are written to ignored `test-results/`. `CHROMIUM_PATH` optionally selects an existing Chromium executable.
