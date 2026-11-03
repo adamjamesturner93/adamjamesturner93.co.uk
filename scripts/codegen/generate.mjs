@@ -1,3 +1,4 @@
+import { validateTags } from '../../lib/content/tags.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,15 +23,21 @@ export function generate(
       'Provide a lowercase kebab-case slug, e.g. interesting-problems',
     );
   let category = 'general';
-  if (flags.length) {
-    if (
-      collection !== 'blog' ||
-      flags.length !== 2 ||
-      flags[0] !== '--category' ||
-      !Object.hasOwn(categories, flags[1])
-    )
-      throw Error('Use --category with a registered blog category');
-    category = flags[1];
+  let tags = [];
+  const seenFlags = new Set();
+  for (let i = 0; i < flags.length; i += 2) {
+    const flag = flags[i];
+    const value = flags[i + 1];
+    if (collection !== 'blog' || !value || seenFlags.has(flag))
+      throw Error('Use --category or --tags once each with a value');
+    seenFlags.add(flag);
+    if (flag === '--category' && Object.hasOwn(categories, value))
+      category = value;
+    else if (flag === '--tags') tags = validateTags(value.split(','));
+    else
+      throw Error(
+        'Use --category with a registered blog category or --tags with registered tags',
+      );
   }
   const contentFile = path.join(root, 'content', collection, slug + '.mdx');
   const coverImage = `/images/${collection}/${slug}.svg`;
@@ -59,7 +66,7 @@ export function generate(
     description: 'TODO: Add a short description',
     date,
     ...(collection === 'blog'
-      ? { category, relatedArticles: [] }
+      ? { category, tags, relatedArticles: [] }
       : {
           eventName: 'TODO: Event name',
           eventDate: null,

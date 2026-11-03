@@ -1,3 +1,4 @@
+import TopicChips from '../components/topic-chips';
 import Link from 'next/link';
 import type { Article } from '../lib/content';
 import { categories } from '../lib/content';
@@ -67,6 +68,7 @@ export default function List({
               </Link>
             </h2>
             <p>{a.description}</p>
+            <TopicChips tags={a.tags.slice(0, 3)} small />
             <ContentDate {...a} />
           </div>
         </article>

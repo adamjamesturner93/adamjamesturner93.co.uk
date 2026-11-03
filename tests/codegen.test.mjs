@@ -122,3 +122,30 @@ test('artwork is deterministic, varied, self-contained and not title based', () 
   assert.equal(covers.size, 6);
   assert.equal(artwork('example'), artwork('example'));
 });
+
+test('blog tags default empty and support validated flags alongside category', (t) => {
+  const root = fixture(t);
+  generate('blog', ['empty-tags'], { root });
+  assert.deepEqual(loadCollection('blog', root)[0].tags, []);
+  generate(
+    'blog',
+    [
+      'tagged',
+      '--tags',
+      'feedback,leadership',
+      '--category',
+      'engineering-leadership',
+    ],
+    { root },
+  );
+  assert.deepEqual(
+    loadCollection('blog', root).find((e) => e.slug === 'tagged').tags,
+    ['feedback', 'leadership'],
+  );
+  const before = fs.readdirSync(path.join(root, 'content/blog'));
+  for (const value of ['unknown', 'Feedback', 'feedback,feedback'])
+    assert.throws(() =>
+      generate('blog', ['invalid', '--tags', value], { root }),
+    );
+  assert.deepEqual(fs.readdirSync(path.join(root, 'content/blog')), before);
+});

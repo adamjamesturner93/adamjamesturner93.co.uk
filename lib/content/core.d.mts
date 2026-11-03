@@ -1,3 +1,4 @@
+import type { TagId } from './tags.mjs';
 export type Category =
   | 'engineering-leadership'
   | 'technology-strategy'
@@ -19,6 +20,7 @@ export type BaseEntry = {
 };
 export type BlogEntry = BaseEntry & {
   collection: 'blog';
+  tags: TagId[];
   category: Category;
   updatedAt?: string;
   relatedArticles?: string[];

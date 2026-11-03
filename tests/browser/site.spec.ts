@@ -9,11 +9,16 @@ test('themes, responsive pages, system changes and navigation', async ({
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ['light', 'dark'] as const) {
       await page.emulateMedia({ colorScheme: theme });
+      await page.goto('/blog');
+      const articleLinks = page.locator('.story h2 a');
+      const articlePath = (await articleLinks.count())
+        ? await articleLinks.first().getAttribute('href')
+        : null;
       for (const path of [
         '/',
         '/about',
         '/blog',
-        '/blog/governance-and-engineering-speed',
+        ...(articlePath ? [articlePath] : []),
         '/privacy',
       ]) {
         await page.goto(path);

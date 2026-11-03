@@ -1,0 +1,67 @@
+---
+title: Data Migrations - moving more than just data
+slug: data-migrations-moving-more-than-just-data
+description: >-
+  Why a successful migration depends on business meaning, operational readiness
+  and ownership, as well as moving records.
+date: '2026-11-01'
+category: technology-strategy
+relatedArticles:
+  - diversity-bringing-together-ideas-experiences-and-culture
+  - making-annual-reviews-valuable
+draft: true
+coverImage: /images/blog/data-migrations-moving-more-than-just-data.svg
+coverImageAlt: ''
+---
+
+A data migration can look deceptively tidy on a programme plan. Extract the records, transform them, load the destination and reconcile the totals. There are difficult technical problems in that sequence, but the sequence itself is reassuringly clear.
+
+The complication is that a business does not operate on records alone. It operates on the meaning attached to them, the decisions they support and the processes that have grown around them. Moving the values without understanding those relationships can produce a technically successful migration that leaves people unable to do their jobs.
+
+## The meaning travels too
+
+Imagine moving customer records between two platforms. Both have a field called “active”. That looks like a straightforward mapping until someone asks what active actually means.
+
+One platform might mean that an agreement is open. Another might mean that a customer has completed verification. A reporting team might use the same word for recent activity. None of those definitions is necessarily wrong, but treating them as interchangeable creates a new business rule by accident.
+
+This is where a mapping document becomes a record of decisions. What does the value represent? Who can approve the interpretation? What happens to records that do not fit? Engineering can expose ambiguity and explain the options, but it should not silently become the owner of every business definition.
+
+The awkward records are often the most useful ones to examine early. They reveal assumptions that the happy path conceals.
+
+## Reconciliation needs to answer a business question
+
+Matching record counts is useful. It is also possible to move every record and still get the outcome wrong.
+
+A stronger reconciliation approach asks what people need to trust afterwards. Can an operational colleague find the right customer history? Do balances reconcile at the relevant level? Does a downstream report classify the same population in the expected way? Where a definition deliberately changes, can that difference be explained?
+
+These checks need named owners and agreed tolerances. A discrepancy is much harder to resolve during a cutover if nobody has decided which system is authoritative or who can accept an exception.
+
+There is a trade-off here. Testing every possible business interaction may be impractical. Counting rows alone may be dangerously narrow. The useful middle ground is to identify the decisions and services with the greatest consequences, then build evidence around those.
+
+## Cutover changes how people work
+
+Consider a hypothetical migration completed over a weekend. The new platform is available on Monday, the records are present, and the technical team declares success. Then an operations team discovers that a familiar exception report no longer exists.
+
+The missing report may never have appeared in the formal application inventory. It might have been a spreadsheet maintained by someone who understood a particular process exceptionally well. Its absence still matters.
+
+Discovering these dependencies requires conversations with the people using the information, alongside tracing integrations and scheduled jobs. Training, support arrangements, access permissions and escalation routes belong in the migration plan too. They are part of making the change usable.
+
+## Recovery is more than restoring a backup
+
+“Roll back if necessary” is reassuring until the destination has accepted new transactions. At that point, returning to the source may mean reconciling two different histories.
+
+A recovery plan should identify when reversal remains straightforward, when it becomes expensive, and when a forward correction is safer. Those boundaries affect who needs to be available and what evidence is required before proceeding.
+
+Rehearsals help turn assumptions into observations. They should exercise decisions and handovers as well as transformation scripts: who notices a failed check, who pauses the process, and who explains the consequences? A rehearsal that only proves the load finishes has tested a narrower problem than the organisation will face.
+
+## Finish with ownership, not just a transfer
+
+Migration work can uncover years of unresolved data-quality issues. There is rarely unlimited time to repair them all. The practical question is which defects must be corrected now, which can be accepted explicitly, and who will own the remaining work.
+
+That ownership needs to survive the programme. Otherwise the new platform inherits the uncertainty while the people who understood it move on.
+
+Before calling a migration complete, ask: **what can the business now do reliably, and who is responsible when the data does not behave as expected?** A convincing answer brings together technical correctness, operational readiness and clear decisions about meaning. That is a much more useful finish line than “the load completed”.
+
+## Further reading
+
+- [Evolutionary Database Design — Pramod Sadalage and Martin Fowler](https://martinfowler.com/articles/evodb.html). A technical companion on repeatable, version-controlled database change; broader organisational considerations above are the argument of this article.

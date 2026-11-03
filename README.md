@@ -82,17 +82,27 @@ Optional GA4 setup: set `GA_MEASUREMENT_ID=G-…` in Production. No tracking or 
 
 In the GA4 web data stream, enable Enhanced measurement → Page views → Page loads and Page changes based on browser history events. This lets GA4 measure Next.js client navigation without a second manual page-view implementation. After connecting the real Measurement ID, verify page views in GA4 Realtime/DebugView. Analytics reports usage; Search Console reports search visibility. Neither integration guarantees rankings. The GA4 property, Search Console ownership, real collection and Vercel environment settings require account access and have not been configured by these source changes.
 
-## Link related articles
+## Article topics and recommendations
 
-Add an optional ordered list to the YAML front matter of any `.md` or `.mdx` blog article:
+Blog front matter accepts an optional `tags` array of up to five unique, lowercase kebab-case identifiers. Missing tags default to `[]`. The shared registry in `lib/content/tags.mjs` defines the allowed identifiers, display labels and consistent colour for each topic. Unknown or malformed identifiers fail content validation.
 
 ```yaml
-relatedArticles:
-  - leadership-outside-your-team
-  - legacy-modernisation-business-problem
+tags:
+  - performance-management
+  - feedback
 ```
 
-Use slugs, not URLs or filenames. The article footer shows up to two related articles: your selections first, followed by automatic suggestions based on category and publication recency if fewer than two selections are visible. Draft and scheduled selections only appear in authorised author previews; public pages skip them. Omitting the field or using `relatedArticles: []` keeps automatic suggestions. No reciprocal edit is needed. Validation rejects malformed, duplicate, self-referencing and unknown slugs; links to existing drafts are valid but remain subject to visibility rules. New blog scaffolds include an empty list.
+Article footers show all supplied tags under “Explore more topics”; article previews show the first three. Chips are informational text. Categories remain separate. There are no tag filters or archive routes.
+
+Generate a draft with empty tags by default, or supply registered tags alongside the existing category option:
+
+```bash
+npm run codegen:blog -- example-article --category engineering-leadership --tags feedback,leadership
+```
+
+Related articles rank visible candidates by shared tag count, matching category, then publication recency, with the slug breaking ties. Up to two appear; a lone published article has no recommendations. Existing `relatedArticles` lists remain accepted and validated for compatibility, but recommendation order follows the tag/category/date ranking. Draft and future-dated articles remain restricted to authorised previews.
+
+Reading time appears beside the article date. The server estimates it from article prose at 225 words per minute, rounded up to at least one minute. Markdown formatting, link destinations, front matter, MDX comments/imports/expressions and fenced code do not add words; inline code and the existing Figure component's caption count as readable text. There is no reading-time front-matter field or additional client JavaScript.
 
 ## Themes and cookie testing
 

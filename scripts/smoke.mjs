@@ -29,7 +29,10 @@ for (const path of [
   '/speaking/definitely-missing-slug',
 ])
   assert.equal((await request(path)).response.status, 404, path);
-for (const path of ['/writing', '/writing/governance-and-engineering-speed']) {
+for (const path of [
+  '/writing',
+  '/writing/data-migrations-moving-more-than-just-data',
+]) {
   const { response } = await request(path);
   assert.equal(response.status, 308);
   assert.equal(

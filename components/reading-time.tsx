@@ -1,0 +1,30 @@
+import { readingMinutes } from '../lib/reading-time.mjs';
+
+export default function ReadingTime({
+  body,
+  extension,
+}: {
+  body: string;
+  extension: string;
+}) {
+  return (
+    <span className="article-reading-time">
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 6v6h5" />
+      </svg>
+      <span>
+        <span className="sr-only">Estimated reading time: </span>
+        {readingMinutes(body, extension)} min read
+      </span>
+    </span>
+  );
+}

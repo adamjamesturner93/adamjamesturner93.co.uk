@@ -156,6 +156,7 @@ test('Markdown and MDX discovery, duplicate slugs and deterministic ordering', (
     matter.stringify('## Markdown body', base),
   );
   assert.equal(loadCollection('blog', root)[0].extension, '.md');
+  assert.deepEqual(loadCollection('blog', root)[0].tags, []);
   fs.writeFileSync(
     path.join(dir, base.slug + '.mdx'),
     matter.stringify('## MDX body', base),
@@ -260,7 +261,7 @@ test('collection validation catches unknown related article slugs', (t) => {
   );
   assert.equal(loadCollection('blog', root).length, 2);
 });
-test('curated related articles preserve order and visibility, then fill with automatic suggestions', () => {
+test('related ranking uses category and recency regardless of legacy curated order', () => {
   const current = {
     ...base,
     slug: 'current',
@@ -288,19 +289,94 @@ test('curated related articles preserve order and visibility, then fill with aut
   });
   assert.deepEqual(
     relatedEntries(current, visible).map((e) => e.slug),
-    ['older', 'newer'],
+    ['automatic', 'newer'],
   );
   assert.deepEqual(
     relatedEntries(
       { ...current, relatedArticles: ['hidden-draft', 'older'] },
       visible,
     ).map((e) => e.slug),
-    ['older', 'automatic'],
+    ['automatic', 'newer'],
   );
   assert.deepEqual(
     relatedEntries({ ...current, relatedArticles: [] }, visible).map(
       (e) => e.slug,
     ),
     ['automatic', 'newer'],
+  );
+});
+
+test('tag validation defaults missing tags and rejects invalid metadata', (t) => {
+  const root = fixture(t);
+  for (const tags of [undefined, [], ['feedback', 'leadership']])
+    assert.deepEqual(check(root, { ...base, tags }).tags, tags || []);
+  for (const tags of [
+    null,
+    'feedback',
+    ['Feedback'],
+    ['unknown'],
+    ['feedback', 'feedback'],
+    ['bad_tag'],
+    [
+      'feedback',
+      'leadership',
+      'communication',
+      'data-migration',
+      'risk-management',
+      'change-management',
+    ],
+  ])
+    assert.throws(() => check(root, { ...base, tags }), /tag/i);
+});
+test('shared tags outrank category then recency, with stable ties and no self recommendations', () => {
+  const current = { ...base, tags: ['feedback', 'leadership'] };
+  const candidates = [
+    { ...base, slug: 'category', date: '2026-11-02' },
+    { ...base, slug: 'one', tags: ['feedback'] },
+    {
+      ...base,
+      slug: 'two',
+      tags: ['feedback', 'leadership'],
+      category: 'general',
+    },
+    {
+      ...base,
+      slug: 'other',
+      tags: ['feedback', 'leadership'],
+      category: 'technology-strategy',
+    },
+  ];
+  assert.deepEqual(
+    relatedEntries(current, [current, ...candidates]).map((e) => e.slug),
+    ['two', 'other'],
+  );
+  assert.deepEqual(relatedEntries(current, [current]), []);
+  const tied = ['zebra', 'alpha'].map((slug) => ({ ...base, slug }));
+  assert.equal(relatedEntries(current, tied)[0].slug, 'alpha');
+});
+
+test('related tag matching respects production draft and schedule visibility', () => {
+  const current = {
+    ...base,
+    slug: 'current',
+    draft: false,
+    publishedAt: '2026-10-31',
+    tags: ['feedback'],
+    collection: 'blog',
+  };
+  const draft = { ...current, slug: 'draft', draft: true };
+  const scheduled = {
+    ...current,
+    slug: 'scheduled',
+    publishedAt: '2099-01-01',
+  };
+  const other = { ...current, slug: 'other', tags: [] };
+  const visible = visibleEntries([current, draft, scheduled, other], {
+    env: { VERCEL_ENV: 'production', ENABLE_DRAFTS: 'true' },
+    today: '2026-11-03',
+  });
+  assert.deepEqual(
+    relatedEntries(current, visible).map((e) => e.slug),
+    ['other'],
   );
 });

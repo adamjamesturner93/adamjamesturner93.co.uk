@@ -1,3 +1,4 @@
+import TopicChips from '../../../components/topic-chips';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { articles, categories, relatedEntries } from '../../../lib/content';
@@ -7,6 +8,7 @@ import ArticleSharing from '../../../components/article-sharing';
 import Cover from '../../../components/cover';
 import ContentBody from '../../../components/content-body';
 import ContentDate, { isScheduled } from '../../../components/content-date';
+import ReadingTime from '../../../components/reading-time';
 export function generateStaticParams() {
   return articles().map((a) => ({ slug: a.slug }));
 }
@@ -84,6 +86,7 @@ export default async function Article({
           <div className="article-byline">
             <span>By Adam Turner</span>
             <ContentDate {...a} />
+            <ReadingTime body={a.body} extension={a.extension} />
             {!a.draft && !isScheduled(a.publishedAt) && (
               <a className="article-share-jump" href="#share-heading">
                 Share article ↓
@@ -140,6 +143,17 @@ export default async function Article({
             }).replaceAll('<', '\u003c'),
           }}
         />
+      )}
+      {a.tags.length > 0 && (
+        <section
+          className="reading-shell article-topics"
+          aria-labelledby="topics-heading"
+        >
+          <h2 id="topics-heading" className="eyebrow">
+            Explore more topics
+          </h2>
+          <TopicChips tags={a.tags} />
+        </section>
       )}
       {related.length > 0 && (
         <section className="shell related-section">
