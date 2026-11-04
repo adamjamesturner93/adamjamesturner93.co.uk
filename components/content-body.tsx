@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { articles } from '../lib/content';
+import { articleLinkHref } from '../lib/article-links.mjs';
 import Markdown from 'react-markdown';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
@@ -40,12 +43,28 @@ export default async function ContentBody({
   body: string;
   extension: string;
 }) {
+  function ArticleLink({
+    slug,
+    children,
+  }: {
+    slug: string;
+    children: React.ReactNode;
+  }) {
+    const href = articleLinkHref(slug, articles());
+    return href ? <Link href={href}>{children}</Link> : <>{children}</>;
+  }
   return (
     <div className="prose">
       {extension === '.mdx' ? (
         <MDXRemote
           source={body}
-          components={{ a: ContentLink, ContentLink, table: Table, Figure }}
+          components={{
+            a: ContentLink,
+            ContentLink,
+            ArticleLink,
+            table: Table,
+            Figure,
+          }}
           options={{
             mdxOptions: { remarkPlugins: [remarkGfm, remarkContentLinks] },
           }}

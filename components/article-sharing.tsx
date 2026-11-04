@@ -16,6 +16,9 @@ export default function ArticleSharing({
         <a
           className="share-control"
           href={links.linkedin}
+          data-analytics-event="article_share_click"
+          data-method="linkedin"
+          data-article-slug={slug}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Share on LinkedIn (opens in a new tab)"
@@ -25,6 +28,9 @@ export default function ArticleSharing({
         <a
           className="share-control"
           href={links.whatsapp}
+          data-analytics-event="article_share_click"
+          data-method="whatsapp"
+          data-article-slug={slug}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Share on WhatsApp (opens in a new tab)"
@@ -34,16 +40,25 @@ export default function ArticleSharing({
         <a
           className="share-control"
           href={links.x}
+          data-analytics-event="article_share_click"
+          data-method="x"
+          data-article-slug={slug}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Share on X (opens in a new tab)"
         >
           X <span aria-hidden="true">↗</span>
         </a>
-        <a className="share-control" href={links.email}>
+        <a
+          className="share-control"
+          href={links.email}
+          data-analytics-event="article_share_click"
+          data-method="email"
+          data-article-slug={slug}
+        >
           Email
         </a>
-        <ShareActions url={links.url} title={title} />
+        <ShareActions url={links.url} title={title} slug={slug} />
       </div>
     </section>
   );

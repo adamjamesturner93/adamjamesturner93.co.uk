@@ -2,12 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
-import { createElement } from 'react';
+import { createElement, Fragment } from 'react';
 import { renderToReadableStream, renderToStaticMarkup } from 'react-dom/server';
 import Markdown from 'react-markdown';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import { isExternalLink, remarkContentLinks } from '../lib/links.mjs';
+import { articleLinkHref } from '../lib/article-links.mjs';
 import { site } from '../lib/site.mjs';
 
 function component(file, imports) {
@@ -21,7 +22,7 @@ function component(file, imports) {
       assert.ok(name in imports, `Unexpected dependency: ${name}`);
       return { __esModule: true, ...imports[name] };
     },
-    { createElement },
+    { createElement, Fragment },
   );
   return exports.default;
 }
@@ -30,6 +31,11 @@ const ContentLink = component('components/content-link.tsx', {
   '../lib/links.mjs': { isExternalLink },
 });
 const ContentBody = component('components/content-body.tsx', {
+  'next/link': {
+    default: ({ children, ...props }) => createElement('a', props, children),
+  },
+  '../lib/content': { articles: () => [{ slug: 'visible' }] },
+  '../lib/article-links.mjs': { articleLinkHref },
   'react-markdown': { default: Markdown },
   'next-mdx-remote/rsc': { MDXRemote },
   'remark-gfm': { default: remarkGfm },
@@ -109,4 +115,18 @@ test('explicit MDX JSX anchors also obey the shared link behaviour', async () =>
     /target="_blank"[^>]*href="https:\/\/example.com"[^>]*rel="noopener noreferrer"/,
   );
   assert.match(html, /<a href="\/blog">Internal<\/a>/);
+});
+
+test('MDX contextual links render visible destinations and preserve hidden target prose', async () => {
+  const stream = await renderToReadableStream(
+    await ContentBody({
+      body: '<ArticleLink slug="visible">Published prose</ArticleLink> and <ArticleLink slug="draft">Draft prose</ArticleLink>',
+      extension: '.mdx',
+    }),
+  );
+  await stream.allReady;
+  const html = await new Response(stream).text();
+  assert.match(html, /href="\/blog\/visible">Published prose<\/a>/);
+  assert.match(html, /Draft prose/);
+  assert.doesNotMatch(html, /\/blog\/draft/);
 });

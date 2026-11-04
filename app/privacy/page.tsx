@@ -77,6 +77,16 @@ export default function Privacy() {
           Dark. Choosing System removes that override. Neither preference is
           sent to Google as part of these controls.
         </p>
+        <h2>Article and connection activity</h2>
+        <p>
+          With analytics consent, I also measure clicks on LinkedIn connection
+          links, article-sharing links and RSS links, successful article-link
+          copies and completed native sharing actions. These events include the
+          article identifier, sharing service or location of the link where
+          relevant. They do not tell me whether you connected on LinkedIn,
+          published a post or subscribed to a feed. No clipboard contents or
+          messages are collected by these events.
+        </p>
         <h2>Sharing articles</h2>
         <p>
           Sharing buttons link to LinkedIn, WhatsApp, X or your email app. No

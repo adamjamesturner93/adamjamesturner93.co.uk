@@ -1,3 +1,4 @@
+import ArticleAuthor from '../../../components/article-author';
 import TopicChips from '../../../components/topic-chips';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -114,7 +115,10 @@ export default async function Article({
           )}
           <ContentBody body={a.body} extension={a.extension} />
           {!a.draft && !isScheduled(a.publishedAt) && (
-            <ArticleSharing slug={a.slug} title={a.title} />
+            <>
+              <ArticleAuthor slug={a.slug} />
+              <ArticleSharing slug={a.slug} title={a.title} />
+            </>
           )}
         </div>
       </article>

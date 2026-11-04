@@ -175,7 +175,12 @@ export default function About() {
             <p>
               Hopefully, they’ll also start a few interesting conversations.
             </p>
-            <ContentLink className="button button-ink" href={site.linkedin}>
+            <ContentLink
+              className="button button-ink"
+              href={site.linkedin}
+              data-analytics-event="linkedin_connect_click"
+              data-placement="about"
+            >
               Let’s connect on LinkedIn <span aria-hidden="true">↗</span>
             </ContentLink>
           </div>

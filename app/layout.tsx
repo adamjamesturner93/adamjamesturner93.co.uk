@@ -75,8 +75,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href="/blog">Blog</Link>
                 <Link href="/about">About</Link>
                 {hasSpeaking && <Link href="/speaking">Speaking</Link>}
-                <ContentLink href={site.linkedin}>LinkedIn ↗</ContentLink>
-                <a href="/rss.xml">RSS</a>
+                <ContentLink
+                  href={site.linkedin}
+                  data-analytics-event="linkedin_connect_click"
+                  data-placement="footer"
+                >
+                  LinkedIn ↗
+                </ContentLink>
+                <a
+                  href="/rss.xml"
+                  data-analytics-event="rss_click"
+                  data-placement="footer"
+                >
+                  RSS
+                </a>
                 <Link href="/privacy">Privacy</Link>
               </nav>
             </div>

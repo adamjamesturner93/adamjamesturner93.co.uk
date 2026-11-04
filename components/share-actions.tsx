@@ -1,12 +1,15 @@
 'use client';
+import { trackAnalyticsEvent } from '../lib/analytics-events.mjs';
 import { useRef, useState, useEffect, useSyncExternalStore } from 'react';
 const subscribe = () => () => {};
 export default function ShareActions({
   url,
   title,
+  slug,
 }: {
   url: string;
   title: string;
+  slug: string;
 }) {
   const [message, setMessage] = useState('');
   const [manual, setManual] = useState(false);
@@ -27,6 +30,7 @@ export default function ShareActions({
     try {
       if (!navigator.clipboard?.writeText) throw Error('Clipboard unavailable');
       await navigator.clipboard.writeText(url);
+      trackAnalyticsEvent(window, 'article_link_copy', { article_slug: slug });
       setManual(false);
       setMessage('Link copied.');
     } catch {
@@ -39,6 +43,9 @@ export default function ShareActions({
     setMessage('');
     try {
       await navigator.share({ title, url });
+      trackAnalyticsEvent(window, 'article_native_share', {
+        article_slug: slug,
+      });
     } catch (error) {
       if (!(error instanceof DOMException && error.name === 'AbortError'))
         setMessage(

@@ -115,3 +115,34 @@ To check real analytics locally, stop the dev server, run `npm run build`, then 
 The author confirmed 14-month GA retention. Before launch, confirm the property's reset-on-activity setting and provider log retention/transfer arrangements against the privacy notice. No dashboard settings were changed by this work. LinkedIn remains the privacy contact and requires third-party access; a public email would improve accessibility.
 
 Browser regression tests: install Chromium with `npx playwright install chromium`, start the site, then run `npm run test:browser`. Set `TEST_BASE_URL` for another port. Set `TEST_ANALYTICS=demo` against the local demonstration or `TEST_ANALYTICS=production` against a production build with a GA ID to include consent tests. Google requests are intercepted in these tests. Screenshots are written to ignored `test-results/`. `CHROMIUM_PATH` optionally selects an existing Chromium executable.
+
+## Contextual article links
+
+In MDX use `<ArticleLink slug="feedback-isnt-a-gift-its-a-dance">descriptive text</ArticleLink>`.
+The slug must be literal and refer to an existing article; builds reject unknown targets.
+The text becomes a link only when the destination is visible under the current publication policy.
+Publishing requires completing the draft, setting `draft: false` and `publishedAt`, then rebuilding.
+Shared tags independently drive related recommendations. Keep outline placeholders until the article is finished so publication validation catches them.
+
+## Interaction analytics
+
+Production GA events remain opt-in: `linkedin_connect_click`, `article_share_click`,
+`article_link_copy`, `article_native_share` and `rss_click`. Parameters are `placement`
+(`article_author`, `about`, `footer`), `method` (sharing links only), and `article_slug`
+where applicable. Copies count only on clipboard success; cancelled/failed native shares do not count.
+These are intent/action measurements, not confirmed connections, posts or subscriptions.
+No actions before consent/GA initialisation are replayed. Preview and demo modes send nothing.
+
+In GA Admin, verify enhanced measurement for page views (including browser history changes),
+outbound clicks and scrolling. Keep GA as the sole page-view source; do not add a second manual tracker.
+In DebugView/Realtime, verify one page view for each Next.js navigation after consent.
+Register `placement` and `article_slug` as event-scoped custom dimensions if needed in reports;
+`method` is the sharing-method parameter. Optionally mark `linkedin_connect_click` as a key event,
+labelled as connection intent. Generic outbound `click` events and these purpose-specific events
+can coexist; do not sum them as distinct actions. Compare articles by engagement and actions,
+remembering that visitors who decline analytics are absent.
+
+Example link for a LinkedIn post:
+`https://adamjamesturner93.co.uk/blog/making-annual-reviews-valuable?utm_source=linkedin&utm_medium=social&utm_campaign=annual_reviews`
+Use campaign parameters on distributed links, not internal navigation or canonical URLs.
+GA dashboard settings are separate from these code changes and must be verified in the property.

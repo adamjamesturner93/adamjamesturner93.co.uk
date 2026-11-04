@@ -1,4 +1,8 @@
 'use client';
+import {
+  startAnalyticsEvents,
+  stopAnalyticsEvents,
+} from '../lib/analytics-events.mjs';
 import Script from 'next/script';
 import Link from 'next/link';
 import { useState, useSyncExternalStore, useRef, useEffect } from 'react';
@@ -17,6 +21,7 @@ function createConsentStore(storageKey: string) {
     function changed(event: StorageEvent) {
       if (event.key !== null && event.key !== storageKey) return;
       memory = null;
+      if (snapshot() !== 'accepted') stopAnalyticsEvents(window);
       if (snapshot() !== 'accepted' && document.getElementById('ga4-library')) {
         clearAnalyticsCookies();
         location.reload();
@@ -74,6 +79,11 @@ export default function AnalyticsConsent({
     store.snapshot,
     () => null,
   );
+  useEffect(() => {
+    if (consent === 'accepted' && !demo && measurementId)
+      return startAnalyticsEvents(window);
+    stopAnalyticsEvents(window);
+  }, [consent, demo, measurementId]);
   const [open, setOpen] = useState(false);
   const visible = consent === null || open;
   useEffect(() => {
@@ -81,6 +91,7 @@ export default function AnalyticsConsent({
   }, [open]);
   function choose(value: Exclude<Consent, null>) {
     const revoke = consent === 'accepted' && value === 'rejected';
+    if (value !== 'accepted') stopAnalyticsEvents(window);
     store.save(value);
     setOpen(false);
     if (open) trigger.current?.focus({ preventScroll: true });

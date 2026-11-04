@@ -1680,3 +1680,13 @@ img {
   padding-block: 1.5rem;
   border-block: 1px solid var(--color-line);
 }
+
+.article-author {
+  margin-top: 3rem;
+  padding-block: 1.5rem;
+  border-block: 1px solid var(--color-line);
+  overflow-wrap: anywhere;
+}
+.article-author p + p {
+  margin-top: 1rem;
+}
