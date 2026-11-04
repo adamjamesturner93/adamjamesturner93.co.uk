@@ -1,3 +1,4 @@
+import ContentLink from '../../components/content-link';
 import Link from 'next/link';
 import { site } from '../../lib/site.mjs';
 export const metadata = {
@@ -44,13 +45,13 @@ export default function Privacy() {
         </p>
         <p>
           Google processes analytics data under its own terms. Read{' '}
-          <a href="https://policies.google.com/privacy">
+          <ContentLink href="https://policies.google.com/privacy">
             Google’s privacy policy
-          </a>{' '}
+          </ContentLink>{' '}
           and{' '}
-          <a href="https://policies.google.com/technologies/partner-sites">
+          <ContentLink href="https://policies.google.com/technologies/partner-sites">
             how Google uses information from partner sites
-          </a>
+          </ContentLink>
           .
         </p>
         <h2>What is stored, and for how long?</h2>
@@ -59,9 +60,9 @@ export default function Privacy() {
           user and event data. This setting does not limit aggregated reports.
           Google’s reset-on-activity setting can extend how long a returning
           visitor’s identifier is retained.{' '}
-          <a href="https://support.google.com/analytics/answer/7667196">
+          <ContentLink href="https://support.google.com/analytics/answer/7667196">
             Read Google’s explanation of data retention
-          </a>
+          </ContentLink>
           .
         </p>
         <p>
@@ -95,19 +96,23 @@ export default function Privacy() {
           for this essential processing, and on your consent for optional
           analytics. Provider logs are subject to the hosting service’s
           retention and security arrangements. See{' '}
-          <a href="https://vercel.com/legal/privacy-notice">
+          <ContentLink href="https://vercel.com/legal/privacy-notice">
             Vercel’s privacy notice
-          </a>{' '}
-          and <a href="https://vercel.com/legal/dpa">data processing terms</a>.
+          </ContentLink>{' '}
+          and{' '}
+          <ContentLink href="https://vercel.com/legal/dpa">
+            data processing terms
+          </ContentLink>
+          .
         </p>
         <p>
           Google and Vercel may process information outside the UK. Their
           applicable data processing terms describe the safeguards for
           international transfers, including contractual safeguards where
           required. See{' '}
-          <a href="https://business.safety.google/adsprocessorterms/">
+          <ContentLink href="https://business.safety.google/adsprocessorterms/">
             Google’s data processing terms
-          </a>
+          </ContentLink>
           .
         </p>
         <h2>Your choices and rights</h2>
@@ -123,14 +128,17 @@ export default function Privacy() {
         <p>
           For a privacy question or request, contact me through LinkedIn below.
           You can also{' '}
-          <a href="https://ico.org.uk/make-a-complaint/">
+          <ContentLink href="https://ico.org.uk/make-a-complaint/">
             raise a concern with the Information Commissioner’s Office
-          </a>
+          </ContentLink>
           .
         </p>
         <p>
           This is Adam Turner’s personal website. For questions,{' '}
-          <a href={site.linkedin}>contact me through LinkedIn</a>.
+          <ContentLink href={site.linkedin}>
+            contact me through LinkedIn
+          </ContentLink>
+          .
         </p>
         <Link href="/blog">Back to the blog →</Link>
       </div>

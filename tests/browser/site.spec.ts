@@ -58,10 +58,14 @@ test('themes, responsive pages, system changes and navigation', async ({
   await page.emulateMedia({ colorScheme: 'dark' });
   await expect(page.locator('html')).toHaveCSS('color-scheme', 'dark');
   await page.setViewportSize({ width: 375, height: 900 });
-  await page.locator('summary').click();
+  await page.getByRole('button', { name: 'Open menu', exact: true }).click();
   await page.keyboard.press('Escape');
-  await expect(page.locator('.mobile-menu')).not.toHaveAttribute('open');
-  await expect(page.locator('summary')).toBeFocused();
+  await expect(
+    page.getByRole('button', { name: 'Open menu', exact: true }),
+  ).toHaveAttribute('aria-expanded', 'false');
+  await expect(
+    page.getByRole('button', { name: 'Open menu', exact: true }),
+  ).toBeFocused();
   expect(errors).toEqual([]);
 });
 test('theme falls back when storage is unavailable', async ({ page }) => {

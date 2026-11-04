@@ -1,3 +1,4 @@
+import ContentLink from '../../../components/content-link';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { speaking } from '../../../lib/content';
@@ -91,9 +92,15 @@ export default async function Talk({
         <ContentBody body={e.body} extension={e.extension} />
         {(e.eventUrl || e.slidesUrl || e.videoUrl) && (
           <nav className="resource-links" aria-label="Talk resources">
-            {e.eventUrl && <a href={e.eventUrl}>Event website ↗</a>}
-            {e.slidesUrl && <a href={e.slidesUrl}>Slides ↗</a>}
-            {e.videoUrl && <a href={e.videoUrl}>Recording ↗</a>}
+            {e.eventUrl && (
+              <ContentLink href={e.eventUrl}>Event website ↗</ContentLink>
+            )}
+            {e.slidesUrl && (
+              <ContentLink href={e.slidesUrl}>Slides ↗</ContentLink>
+            )}
+            {e.videoUrl && (
+              <ContentLink href={e.videoUrl}>Recording ↗</ContentLink>
+            )}
           </nav>
         )}
       </div>

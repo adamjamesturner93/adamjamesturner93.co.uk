@@ -2,6 +2,8 @@ import Markdown from 'react-markdown';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import type { ComponentProps } from 'react';
+import ContentLink from './content-link';
+import { remarkContentLinks } from '../lib/links.mjs';
 function Table(props: ComponentProps<'table'>) {
   return (
     <div
@@ -43,11 +45,16 @@ export default async function ContentBody({
       {extension === '.mdx' ? (
         <MDXRemote
           source={body}
-          components={{ table: Table, Figure }}
-          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+          components={{ a: ContentLink, ContentLink, table: Table, Figure }}
+          options={{
+            mdxOptions: { remarkPlugins: [remarkGfm, remarkContentLinks] },
+          }}
         />
       ) : (
-        <Markdown remarkPlugins={[remarkGfm]} components={{ table: Table }}>
+        <Markdown
+          remarkPlugins={[remarkGfm]}
+          components={{ a: ContentLink, table: Table }}
+        >
           {body}
         </Markdown>
       )}

@@ -6,7 +6,7 @@ import { site, policy } from '../lib/site.mjs';
 import { speaking } from '../lib/content';
 import Navigation from '../components/navigation';
 import { analyticsId, analyticsDemo } from '../lib/analytics.mjs';
-import ThemeSelector from '../components/theme-selector';
+import ContentLink from '../components/content-link';
 import { themeBootstrap } from '../lib/theme.mjs';
 import AnalyticsConsent from '../components/analytics-consent';
 const display = Space_Grotesk({
@@ -57,10 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Link className="wordmark" href="/" aria-label="Adam Turner — home">
             Adam Turner<span aria-hidden="true">✳</span>
           </Link>
-          <div className="header-controls">
-            <Navigation hasSpeaking={hasSpeaking} />
-            <ThemeSelector />
-          </div>
+          <Navigation hasSpeaking={hasSpeaking} />
         </header>
         <main id="main">{children}</main>
         <footer className="site-footer">
@@ -78,7 +75,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <Link href="/blog">Blog</Link>
                 <Link href="/about">About</Link>
                 {hasSpeaking && <Link href="/speaking">Speaking</Link>}
-                <a href={site.linkedin}>LinkedIn ↗</a>
+                <ContentLink href={site.linkedin}>LinkedIn ↗</ContentLink>
                 <a href="/rss.xml">RSS</a>
                 <Link href="/privacy">Privacy</Link>
               </nav>

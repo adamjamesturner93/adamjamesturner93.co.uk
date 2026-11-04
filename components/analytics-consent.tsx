@@ -77,13 +77,13 @@ export default function AnalyticsConsent({
   const [open, setOpen] = useState(false);
   const visible = consent === null || open;
   useEffect(() => {
-    if (open) panel.current?.focus();
+    if (open) panel.current?.focus({ preventScroll: true });
   }, [open]);
   function choose(value: Exclude<Consent, null>) {
     const revoke = consent === 'accepted' && value === 'rejected';
     store.save(value);
     setOpen(false);
-    trigger.current?.focus();
+    if (open) trigger.current?.focus({ preventScroll: true });
     if (revoke && !demo) {
       clearAnalyticsCookies();
       location.reload();
@@ -136,7 +136,7 @@ export default function AnalyticsConsent({
                 type="button"
                 onClick={() => {
                   setOpen(false);
-                  trigger.current?.focus();
+                  trigger.current?.focus({ preventScroll: true });
                 }}
               >
                 Close preferences

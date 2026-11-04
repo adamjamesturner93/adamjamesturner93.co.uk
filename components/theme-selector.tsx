@@ -40,42 +40,55 @@ export default function ThemeSelector() {
       else localStorage.setItem(themeKey, next);
     } catch {}
   }
+  const options = (['system', 'light', 'dark'] as const).map((option) => (
+    <button
+      key={option}
+      type="button"
+      aria-pressed={theme === option}
+      onClick={() => choose(option)}
+    >
+      <ThemeIcon theme={option} />
+      <span>{option[0].toUpperCase() + option.slice(1)}</span>
+      <span className="theme-check" aria-hidden="true">
+        {theme === option ? '✓' : ''}
+      </span>
+    </button>
+  ));
   return (
     <div className="theme-selector">
-      <button
-        className="theme-trigger"
-        type="button"
-        popoverTarget="theme-options"
-        onClick={(event) => {
-          const button = event.currentTarget.getBoundingClientRect();
-          const panel = document.getElementById('theme-options');
-          if (panel) {
-            panel.style.top = `${button.bottom + 8}px`;
-            panel.style.right = `${window.innerWidth - button.right}px`;
-          }
-        }}
-        aria-label={`Colour theme: ${theme}`}
-        title={`Colour theme: ${theme}`}
-      >
-        <ThemeIcon theme={theme} />
-      </button>
-      <div id="theme-options" className="theme-options" popover="auto">
-        <p>Appearance</p>
-        <div role="group" aria-label="Colour theme">
-          {(['system', 'light', 'dark'] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              aria-pressed={theme === option}
-              onClick={() => choose(option)}
-            >
-              <ThemeIcon theme={option} />
-              <span>{option[0].toUpperCase() + option.slice(1)}</span>
-              <span className="theme-check" aria-hidden="true">
-                {theme === option ? '✓' : ''}
-              </span>
-            </button>
-          ))}
+      <div className="theme-desktop">
+        <button
+          className="theme-trigger"
+          type="button"
+          popoverTarget="theme-options"
+          onClick={(event) => {
+            const button = event.currentTarget.getBoundingClientRect();
+            const panel = document.getElementById('theme-options');
+            if (panel) {
+              panel.style.top = `${button.bottom + 8}px`;
+              panel.style.right = `${window.innerWidth - button.right}px`;
+            }
+          }}
+          aria-label={`Colour theme: ${theme}`}
+          title={`Colour theme: ${theme}`}
+        >
+          <ThemeIcon theme={theme} />
+        </button>
+        <div id="theme-options" className="theme-options" popover="auto">
+          <p>Appearance</p>
+          <div role="group" aria-label="Colour theme">
+            {options}
+          </div>
+        </div>
+      </div>
+      <div className="theme-mobile">
+        <p className="eyebrow">Appearance</p>
+        <div
+          className="theme-inline-options"
+          role="group"
+          aria-label="Colour theme"
+        >
+          {options}
         </div>
       </div>
     </div>

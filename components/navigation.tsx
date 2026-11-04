@@ -1,10 +1,22 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ThemeSelector from './theme-selector';
 export default function Navigation({ hasSpeaking }: { hasSpeaking: boolean }) {
   const pathname = usePathname();
-  const menu = useRef<HTMLDetailsElement>(null);
+  const [open, setOpen] = useState(false);
+  const menu = useRef<HTMLDivElement>(null);
+  const toggle = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    function outside(event: PointerEvent) {
+      if (event.target instanceof Node && !menu.current?.contains(event.target))
+        setOpen(false);
+    }
+    document.addEventListener('pointerdown', outside);
+    return () => document.removeEventListener('pointerdown', outside);
+  }, [open]);
   const links = (
     <>
       <Link
@@ -30,30 +42,55 @@ export default function Navigation({ hasSpeaking }: { hasSpeaking: boolean }) {
     </>
   );
   return (
-    <>
-      <nav className="desktop-nav" aria-label="Main navigation">
-        {links}
-      </nav>
-      <details
-        ref={menu}
-        className="mobile-menu"
-        onKeyDown={(event) => {
-          if (event.key === 'Escape') {
-            menu.current?.removeAttribute('open');
-            menu.current?.querySelector('summary')?.focus();
-          }
-        }}
+    <div
+      ref={menu}
+      className="header-controls"
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && open) {
+          setOpen(false);
+          toggle.current?.focus({ preventScroll: true });
+        }
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
+    >
+      <button
+        ref={toggle}
+        className="mobile-menu-toggle"
+        type="button"
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-expanded={open}
+        aria-controls="header-menu"
+        onClick={() => setOpen(!open)}
       >
-        <summary>
-          Menu <span aria-hidden="true">＋</span>
-        </summary>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          {open ? (
+            <path d="m6 6 12 12M6 18 18 6" />
+          ) : (
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+      <div id="header-menu" className={`header-menu${open ? ' is-open' : ''}`}>
         <nav
-          aria-label="Mobile navigation"
-          onClick={() => menu.current?.removeAttribute('open')}
+          className="main-nav"
+          aria-label="Main navigation"
+          onClick={() => setOpen(false)}
         >
           {links}
         </nav>
-      </details>
-    </>
+        <ThemeSelector />
+      </div>
+    </div>
   );
 }

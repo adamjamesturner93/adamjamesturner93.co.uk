@@ -1,3 +1,4 @@
+import ContentLink from '../../components/content-link';
 import Link from 'next/link';
 import { site } from '../../lib/site.mjs';
 import PersonalImage from '../../components/personal-image';
@@ -46,9 +47,9 @@ export default function About() {
         </div>
       </section>
       <nav className="shell about-jumps" aria-label="About sections">
-        <a href="#the-work">The work</a>
-        <a href="#the-people">The people</a>
-        <a href="#still-learning">Still learning</a>
+        <ContentLink href="#the-work">The work</ContentLink>
+        <ContentLink href="#the-people">The people</ContentLink>
+        <ContentLink href="#still-learning">Still learning</ContentLink>
       </nav>
       <section className="shell about-sections">
         <div className="about-label">
@@ -174,9 +175,9 @@ export default function About() {
             <p>
               Hopefully, they’ll also start a few interesting conversations.
             </p>
-            <a className="button button-ink" href={site.linkedin}>
+            <ContentLink className="button button-ink" href={site.linkedin}>
               Let’s connect on LinkedIn <span aria-hidden="true">↗</span>
-            </a>
+            </ContentLink>
           </div>
         </div>
       </section>
