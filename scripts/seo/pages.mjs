@@ -7,6 +7,7 @@ import { pathToFileURL } from 'node:url';
 import { loadCollection, visibleEntries } from '../../lib/content/core.mjs';
 import { site } from '../../lib/site.mjs';
 import { checkSocialImageTraces } from './traces.mjs';
+import { socialCover } from '../../lib/social-cover.mjs';
 import {
   analysePage,
   sitemapUrls,
@@ -257,6 +258,11 @@ export async function checkPages({ slug } = {}) {
         if (!asset)
           throw Error('Social image must use the configured site origin');
         report.image = await inspectImage(asset.bytes, asset.type);
+        if (entry?.collection === 'blog') {
+          const expected = await socialCover(entry.coverImage, workspace);
+          if (!expected.equals(Buffer.from(asset.bytes)))
+            throw Error('Social image does not match the MDX cover image');
+        }
         if (preview) {
           const dir = path.join(root, 'reports/seo', slug);
           await fs.mkdir(dir, { recursive: true });

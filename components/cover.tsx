@@ -10,7 +10,11 @@ export default function Cover({
 }) {
   return (
     <Image
-      className="cover"
+      className={
+        src === '/images/blog/data-migrations-moving-more-than-just-data.webp'
+          ? 'cover cover-trim-edge'
+          : 'cover'
+      }
       src={src}
       alt={alt}
       width={960}

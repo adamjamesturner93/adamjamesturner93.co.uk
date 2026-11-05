@@ -1,5 +1,5 @@
 import { articles } from '../../../../lib/content';
-import { socialImage } from '../../../../components/social-image';
+import { socialCover } from '../../../../lib/social-cover.mjs';
 export async function GET(
   _: Request,
   { params }: { params: Promise<{ slug: string }> },
@@ -7,5 +7,8 @@ export async function GET(
   const { slug } = await params;
   const entry = articles().find((e) => e.slug === slug);
   if (!entry) return new Response('Not found', { status: 404 });
-  return socialImage(entry.title, 'ENGINEERING / LEADERSHIP / IDEAS');
+  const image = await socialCover(entry.coverImage);
+  return new Response(new Uint8Array(image), {
+    headers: { 'Content-Type': 'image/png' },
+  });
 }

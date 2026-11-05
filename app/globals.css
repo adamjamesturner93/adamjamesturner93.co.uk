@@ -318,6 +318,13 @@ img {
 .story:hover .cover {
   transform: scale(1.025);
 }
+.cover-trim-edge {
+  /* The source artwork contains a thin white bottom/right edge. */
+  transform: scale(1.02);
+}
+.article-art:has(.cover-trim-edge) {
+  overflow: hidden;
+}
 .story-number {
   position: absolute;
   bottom: 0;

@@ -45,7 +45,7 @@ export async function generateMetadata({
             url: `/blog/${slug}/opengraph-image`,
             width: 1200,
             height: 630,
-            alt: a.title,
+            alt: a.coverImageAlt || a.title,
           },
         ],
       },
@@ -53,7 +53,12 @@ export async function generateMetadata({
         card: 'summary_large_image',
         title: a.title,
         description: a.description,
-        images: [{ url: `/blog/${slug}/opengraph-image`, alt: a.title }],
+        images: [
+          {
+            url: `/blog/${slug}/opengraph-image`,
+            alt: a.coverImageAlt || a.title,
+          },
+        ],
       },
     },
   };
