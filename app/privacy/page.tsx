@@ -1,12 +1,12 @@
+import { pageMetadata } from '../../lib/page-metadata';
 import ContentLink from '../../components/content-link';
 import Link from 'next/link';
 import { site } from '../../lib/site.mjs';
-export const metadata = {
-  title: 'Privacy & cookies',
-  description:
-    'How optional analytics and article sharing work on Adam Turner’s personal website.',
-  alternates: { canonical: '/privacy' },
-};
+export const metadata = pageMetadata(
+  'Privacy & cookies',
+  'How optional analytics and article sharing work on Adam Turner’s personal website.',
+  '/privacy',
+);
 export default function Privacy() {
   return (
     <article className="reading-shell privacy-page">

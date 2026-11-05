@@ -1,3 +1,4 @@
+import { pageMetadata } from '../../../lib/page-metadata';
 import ContentLink from '../../../components/content-link';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -20,12 +21,15 @@ export async function generateMetadata({
   const e = speaking().find((e) => e.slug === slug);
   if (!e) notFound();
   return {
-    title: e.title,
-    description: e.description,
-    alternates: { canonical: '/speaking/' + slug },
+    ...pageMetadata(
+      e.title,
+      e.description,
+      '/speaking/' + slug,
+      `/speaking/${slug}/opengraph-image`,
+    ),
     ...(e.draft || isScheduled(e.publishedAt)
       ? { robots: { index: false, follow: false } }
-      : { openGraph: { images: [`/speaking/${slug}/opengraph-image`] } }),
+      : {}),
   };
 }
 export default async function Talk({

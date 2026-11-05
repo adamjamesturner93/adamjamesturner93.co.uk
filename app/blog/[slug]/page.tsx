@@ -27,34 +27,35 @@ export async function generateMetadata({
     alternates: { canonical: '/blog/' + slug },
     ...(a.draft || isScheduled(a.publishedAt)
       ? { robots: { index: false, follow: false } }
-      : {
-          openGraph: {
-            type: 'article',
-            title: a.title,
-            description: a.description,
-            siteName: site.name,
-            locale: 'en_GB',
-            authors: [site.origin + '/about'],
-            section: categories[a.category],
-            url: site.origin + '/blog/' + slug,
-            publishedTime: a.publishedAt,
-            modifiedTime: a.updatedAt,
-            images: [
-              {
-                url: `/blog/${slug}/opengraph-image`,
-                width: 1200,
-                height: 630,
-                alt: a.title,
-              },
-            ],
+      : {}),
+    ...{
+      openGraph: {
+        type: 'article',
+        title: a.title,
+        description: a.description,
+        siteName: site.name,
+        locale: 'en_GB',
+        authors: [site.origin + '/about'],
+        section: categories[a.category],
+        url: site.origin + '/blog/' + slug,
+        publishedTime: a.publishedAt,
+        modifiedTime: a.updatedAt,
+        images: [
+          {
+            url: `/blog/${slug}/opengraph-image`,
+            width: 1200,
+            height: 630,
+            alt: a.title,
           },
-          twitter: {
-            card: 'summary_large_image',
-            title: a.title,
-            description: a.description,
-            images: [`/blog/${slug}/opengraph-image`],
-          },
-        }),
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: a.title,
+        description: a.description,
+        images: [{ url: `/blog/${slug}/opengraph-image`, alt: a.title }],
+      },
+    },
   };
 }
 export default async function Article({

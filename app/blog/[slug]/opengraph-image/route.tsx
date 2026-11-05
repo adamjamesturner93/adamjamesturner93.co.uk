@@ -5,7 +5,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const entry = articles(true).find((e) => e.slug === slug);
+  const entry = articles().find((e) => e.slug === slug);
   if (!entry) return new Response('Not found', { status: 404 });
   return socialImage(entry.title, 'ENGINEERING / LEADERSHIP / IDEAS');
 }

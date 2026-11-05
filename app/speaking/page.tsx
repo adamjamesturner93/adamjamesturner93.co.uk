@@ -1,15 +1,15 @@
+import { pageMetadata } from '../../lib/page-metadata';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { speaking } from '../../lib/content';
 import { policy } from '../../lib/site.mjs';
 import Cover from '../../components/cover';
 import { displayDate } from '../../components/content-date';
-export const metadata = {
-  title: 'Speaking',
-  description:
-    'Talks, discussions and ideas shared with engineering communities.',
-  alternates: { canonical: '/speaking' },
-};
+export const metadata = pageMetadata(
+  'Speaking',
+  'Talks, discussions and ideas shared with engineering communities.',
+  '/speaking',
+);
 export default function Speaking() {
   const entries = speaking();
   if (!entries.length && !policy().drafts) notFound();

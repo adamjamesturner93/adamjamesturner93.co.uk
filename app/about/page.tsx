@@ -1,13 +1,13 @@
+import { pageMetadata } from '../../lib/page-metadata';
 import ContentLink from '../../components/content-link';
 import Link from 'next/link';
 import { site } from '../../lib/site.mjs';
 import PersonalImage from '../../components/personal-image';
-export const metadata = {
-  title: 'About',
-  description:
-    'Meet Adam Turner, a Senior Software Engineering Manager exploring engineering leadership, technology change, people development and organisational strategy.',
-  alternates: { canonical: '/about' },
-};
+export const metadata = pageMetadata(
+  'About',
+  'Meet Adam Turner, a Senior Software Engineering Manager exploring engineering leadership, technology change, people development and organisational strategy.',
+  '/about',
+);
 export default function About() {
   return (
     <>

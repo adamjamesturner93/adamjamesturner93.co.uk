@@ -266,17 +266,7 @@ if (
         `\nSEO checked ${result.reports.length} non-draft article(s); skipped ${result.skipped} draft(s). Suggestions are editorial heuristics, not Google ranking scores.`,
       );
     }
-    const strictFailure =
-      flags.includes('--strict') &&
-      result.reports.some(
-        (r) =>
-          !r.titleValidation.valid ||
-          !r.descriptionValidation.valid ||
-          [...r.results, ...r.readability.results].some(
-            (c) => c.status === 'poor',
-          ),
-      );
-    process.exitCode = result.errors.length || strictFailure ? 1 : 0;
+    process.exitCode = result.errors.length ? 1 : 0;
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

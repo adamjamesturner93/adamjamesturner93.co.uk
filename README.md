@@ -156,8 +156,7 @@ tooling; they add no client JavaScript and do not send article content to a serv
   from the **Git index**, including partially staged files. Skip `draft: true`
   and deleted files. Scheduled non-drafts are checked before publication too.
 - `npm run seo:articles`: review all tracked/untracked working-tree non-draft articles.
-- Append `-- --json` for machine-readable output, or `-- --strict` to opt into
-  failing on poor editorial checks and metadata recommendations.
+- Append `-- --json` for machine-readable output, or `-- --strict` for explicit technical validation (editorial suggestions remain advisory).
 
 The pre-commit hook runs staged SEO after formatting, type checks and tests.
 Missing title/description/slug, empty prose, extra body H1s, malformed metadata
@@ -193,18 +192,63 @@ RSS/sitemap and consent-aware GA features, so they are not installed. The AI
 package is unnecessary for author-controlled writing. Reflection questions do
 not constitute answered FAQs, so no FAQ schema is generated for them.
 
-### Full public-page check
+### Local publication and social audits
 
-`npm run seo:check` builds production with drafts and analytics disabled, starts a
-temporary loopback server on an available port, and checks every URL in its
-sitemap. This covers Home, About, Blog, Privacy, published articles and published
-speaking pages as they become available. It checks actual rendered titles,
-descriptions, canonical URLs, robots directives, H1s, main content and readability.
-Drafts, scheduled articles, redirects and hidden speaking pages are excluded by
-the existing production sitemap. The temporary server is stopped afterwards.
+- `npm run seo:check`: builds production and checks all expected published pages.
+- `npm run seo:preview -- --slug feedback-isnt-a-gift-its-a-dance`: audits an unpublished article without changing its front matter.
+- `npm run seo:preview -- --slug making-annual-reviews-valuable`: previews the published article using the same local preview process.
+- Add `-- --json` to `seo:check` for structured output; build logs go to stderr.
+- `seo:check -- --strict` retains compatibility and fails on technical/social errors only, just like the default. Editorial suggestions never block these rendered-page audits. This also applies to source-level article checks.
 
-Use `-- --json` for a report (build logs go to stderr), or `-- --strict` to fail
-on editorial suggestions. Normal runs fail only on technical errors. This builds
-into `.next`, so stop the development server before running it. The staged hook
-remains article-only and fast; use the full check before deployment. No deployed
-pages are modified and no requests are made to the live website.
+Each rendered audit copies current source into its own ignored temporary workspace,
+links the installed dependencies, builds there, and starts Next.js on a loopback
+address and available port. It cleans up its server, build processes and temporary
+workspace on completion, error or interruption. It does not share mutable `.next`
+outputs with development or other audit runs. Build dependencies/fonts must already
+be installed or available to the standard Next.js build; ordinary Next/font build
+fetches may occur if its cache is cold. The audit crawler itself only contacts its
+local server, never the deployed site or external links.
+
+The subprocess explicitly uses `VERCEL_ENV=production`, `ENABLE_DRAFTS=false` for
+published checks, and `VERCEL_ENV=preview`, `ENABLE_DRAFTS=true` for draft checks.
+Analytics is disabled. `SITE_LIVE=true` is supplied for compatibility but the current
+site policy does not use it. No `.env` files or deployed configuration are modified.
+Preview pages keep noindex headers/metadata and restrictive robots.txt. Production
+still excludes draft and scheduled pages and their social-image routes. Preview
+social images use the same existing visibility policy as their articles.
+
+The audit compares the actual sitemap against known static routes plus the content
+system's published entries, then checks direct unpublished URLs return 404. It
+validates canonical URLs, heading hierarchy, internal links and fragments, critical
+assets, Open Graph, Twitter fallback values, author/date metadata and existing
+BlogPosting JSON-LD. Canonical URLs must use the production origin. Only URLs on
+that exact origin are mapped to loopback for resource checks; third-party URLs are
+not fetched. Social images must decode as opaque 1200 × 630 PNG/JPEG files under
+5 MB, with matching content types and article-specific routes.
+
+Draft reports are written to ignored `reports/seo/<slug>/`:
+
+- `report.json`: technical failures and separate editorial suggestions.
+- `report.html`: a standalone LinkedIn-style card approximation; open it in a browser.
+- `social-image.png` (or `.jpg`): the actual locally generated image.
+- `social-preview.png`: screenshot when the existing Playwright Chromium is available.
+
+Use `npx playwright install chromium` if screenshot capture is unavailable. The HTML
+report and image remain usable without a browser installation. Visually inspect
+fonts, text clipping and placeholders: metadata and image decoding cannot determine
+whether the design is correct. READY FOR EDITORIAL REVIEW means technical checks
+passed, not that draft writing is complete. No previews are uploaded.
+
+Missing canonical/social metadata, broken assets/links, invalid publication rules,
+sitemap inconsistencies, wrong dates and stale article metadata fail the command.
+Metadata lengths and article readability are suggestions. Blog indexes and legal
+pages are not judged against long-form article expectations, and transition-word
+percentages are not used to prescribe artificial wording.
+
+After deployment, manually check the public canonical URL with LinkedIn's Post
+Inspector if desired. If LinkedIn shows an old image, confirm the deployment has
+the intended metadata and public image response, then request a fresh inspection;
+existing posts can retain cached previews. Check that the image is publicly
+accessible, HTTPS, PNG/JPEG and not blocked by authentication or robots rules.
+Local validation proves the generated metadata/assets are usable; it cannot
+guarantee how LinkedIn or any other external platform will render or cache them.

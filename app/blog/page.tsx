@@ -1,11 +1,11 @@
+import { pageMetadata } from '../../lib/page-metadata';
 import List from '../list';
 import { articles } from '../../lib/content';
-export const metadata = {
-  title: 'Blog — Ideas, lessons & hard questions',
-  description:
-    'Thoughts on engineering, leadership, technology strategy and the challenges that do not have straightforward answers.',
-  alternates: { canonical: '/blog' },
-};
+export const metadata = pageMetadata(
+  'Blog — Ideas, lessons & hard questions',
+  'Thoughts on engineering, leadership, technology strategy and the challenges that do not have straightforward answers.',
+  '/blog',
+);
 export default function Blog() {
   return (
     <div className="shell section-space">

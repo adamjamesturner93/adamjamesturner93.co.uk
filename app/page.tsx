@@ -1,9 +1,15 @@
+import { pageMetadata } from '../lib/page-metadata';
+import { site } from '../lib/site.mjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import List from './list';
 import { articles } from '../lib/content';
 import PersonalImage from '../components/personal-image';
-export const metadata = { alternates: { canonical: '/' } };
+export const metadata = pageMetadata(
+  'Adam Turner — Engineering, leadership & ideas',
+  site.description,
+  '/',
+);
 export default function Home() {
   return (
     <>
