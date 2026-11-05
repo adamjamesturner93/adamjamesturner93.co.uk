@@ -146,3 +146,65 @@ Example link for a LinkedIn post:
 `https://adamjamesturner93.co.uk/blog/making-annual-reviews-valuable?utm_source=linkedin&utm_medium=social&utm_campaign=annual_reviews`
 Use campaign parameters on distributed links, not internal navigation or canonical URLs.
 GA dashboard settings are separate from these code changes and must be verified in the property.
+
+## Article SEO checks
+
+Power SEO `core`, `content-analysis` and `readability` run locally as development
+tooling; they add no client JavaScript and do not send article content to a service.
+
+- `npm run seo:staged`: inspect added, changed or renamed Markdown/MDX articles
+  from the **Git index**, including partially staged files. Skip `draft: true`
+  and deleted files. Scheduled non-drafts are checked before publication too.
+- `npm run seo:articles`: review all tracked/untracked working-tree non-draft articles.
+- Append `-- --json` for machine-readable output, or `-- --strict` to opt into
+  failing on poor editorial checks and metadata recommendations.
+
+The pre-commit hook runs staged SEO after formatting, type checks and tests.
+Missing title/description/slug, empty prose, extra body H1s, malformed metadata
+and unsupported dynamic MDX stop the check. Readability, length and keyword
+suggestions are advisory by default: these heuristics are not Google ranking
+scores, and personal editorial writing does not need to satisfy every suggestion.
+No automatic rewrites or invented claims are applied.
+
+Optionally add an author-selected `focusKeyphrase: annual review` to article
+front matter to assess keyword placement and density. It is not a required field,
+not inferred from tags, and is not emitted as a keywords meta tag. The existing
+schema accepts this optional metadata; the SEO checker validates its type.
+
+The checker parses static Markdown/MDX without executing staged code. It supports
+our ArticleLink, Figure and QuestionsWorthAsking components, including literal
+question arrays and captions. It checks published visibility from the same Git
+index in staged mode. Hidden destinations remain plain text. Unknown components,
+raw HTML and dynamic expressions require an explicit static adapter rather than
+silently producing an inaccurate report. It models the title as the page H1 and
+includes the shared About link; navigation/footer text is excluded from readability.
+Title width includes the site's title suffix. Pixel and reading-level estimates
+are guidance, not promises about search-result display or accessibility.
+
+### Other Power SEO packages
+
+The upstream toolkit is at https://github.com/CyberCraftBD/power-seo.
+`audit` and `links` could help with deployed-page auditing and orphan detection
+once the collection grows. `search-console` and `analytics` could support a later
+report based on actual search queries and click-through rates, with separately
+configured credentials. DNS ownership does not itself provide API credentials.
+The metadata, sitemap and tracking packages duplicate existing Next.js metadata,
+RSS/sitemap and consent-aware GA features, so they are not installed. The AI
+package is unnecessary for author-controlled writing. Reflection questions do
+not constitute answered FAQs, so no FAQ schema is generated for them.
+
+### Full public-page check
+
+`npm run seo:check` builds production with drafts and analytics disabled, starts a
+temporary loopback server on an available port, and checks every URL in its
+sitemap. This covers Home, About, Blog, Privacy, published articles and published
+speaking pages as they become available. It checks actual rendered titles,
+descriptions, canonical URLs, robots directives, H1s, main content and readability.
+Drafts, scheduled articles, redirects and hidden speaking pages are excluded by
+the existing production sitemap. The temporary server is stopped afterwards.
+
+Use `-- --json` for a report (build logs go to stderr), or `-- --strict` to fail
+on editorial suggestions. Normal runs fail only on technical errors. This builds
+into `.next`, so stop the development server before running it. The staged hook
+remains article-only and fast; use the full check before deployment. No deployed
+pages are modified and no requests are made to the live website.

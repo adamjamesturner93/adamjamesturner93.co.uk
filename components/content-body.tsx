@@ -1,3 +1,4 @@
+import QuestionsWorthAsking from './questions-worth-asking';
 import Link from 'next/link';
 import { articles } from '../lib/content';
 import { articleLinkHref } from '../lib/article-links.mjs';
@@ -62,10 +63,12 @@ export default async function ContentBody({
             a: ContentLink,
             ContentLink,
             ArticleLink,
+            QuestionsWorthAsking,
             table: Table,
             Figure,
           }}
           options={{
+            blockJS: false,
             mdxOptions: { remarkPlugins: [remarkGfm, remarkContentLinks] },
           }}
         />

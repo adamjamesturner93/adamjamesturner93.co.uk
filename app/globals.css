@@ -1690,3 +1690,31 @@ img {
 .article-author p + p {
   margin-top: 1rem;
 }
+
+.prose .questions-worth-asking {
+  margin-block: 2.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: var(--color-lilac);
+  color: var(--color-ink);
+  border-inline-start: 3px solid var(--color-brand);
+  border-radius: 0 12px 12px 0;
+  overflow-wrap: anywhere;
+}
+.prose .questions-worth-asking h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+.prose .questions-worth-asking ol {
+  list-style-type: decimal-leading-zero;
+  padding-inline-start: 2rem;
+  margin-bottom: 0;
+}
+.prose .questions-worth-asking li {
+  padding-inline-start: 0.5rem;
+  margin-block: 1rem;
+}
+.prose .questions-worth-asking li::marker {
+  color: var(--color-brand);
+  font-size: 0.85em;
+  font-family: var(--font-display), sans-serif;
+}

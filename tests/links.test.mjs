@@ -30,7 +30,12 @@ function component(file, imports) {
 const ContentLink = component('components/content-link.tsx', {
   '../lib/links.mjs': { isExternalLink },
 });
+const QuestionsWorthAsking = component(
+  'components/questions-worth-asking.tsx',
+  {},
+);
 const ContentBody = component('components/content-body.tsx', {
+  './questions-worth-asking': { default: QuestionsWorthAsking },
   'next/link': {
     default: ({ children, ...props }) => createElement('a', props, children),
   },
@@ -129,4 +134,34 @@ test('MDX contextual links render visible destinations and preserve hidden targe
   assert.match(html, /href="\/blog\/visible">Published prose<\/a>/);
   assert.match(html, /Draft prose/);
   assert.doesNotMatch(html, /\/blog\/draft/);
+});
+
+test('reflection questions render through MDX once, in author order', async () => {
+  const stream = await renderToReadableStream(
+    await ContentBody({
+      body: '<QuestionsWorthAsking intro="Reflect together." questions={["First?", "Second?", "Third?"]} />',
+      extension: '.mdx',
+    }),
+  );
+  await stream.allReady;
+  const html = await new Response(stream).text();
+  assert.equal((html.match(/<h2>/g) || []).length, 1);
+  assert.match(html, /Questions worth asking/);
+  assert.match(html, /Reflect together/);
+  assert.match(
+    html,
+    /<ol><li>First\?<\/li><li>Second\?<\/li><li>Third\?<\/li><\/ol>/,
+  );
+  assert.doesNotThrow(() =>
+    renderToStaticMarkup(
+      createElement(QuestionsWorthAsking, { questions: ['A', 'B', 'C'] }),
+    ),
+  );
+  for (const questions of [
+    [],
+    ['A', 'B'],
+    ['A', 'B', ''],
+    ['A', 'B', 'C', 'D'],
+  ])
+    assert.throws(() => QuestionsWorthAsking({ questions }), /three/);
 });

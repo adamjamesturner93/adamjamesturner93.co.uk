@@ -80,7 +80,12 @@ export function generate(
   };
   const body =
     collection === 'blog'
-      ? `{/* DRAFT: Replace with your own article. */}\n\n## The question\n\nWhat prompted this article?\n\n## Why it matters\n\nWhat are the competing considerations?\n\n## What I've learned\n\nWhat changed in your understanding?\n\n## References\n\nAdd relevant, verifiable sources.\n`
+      ? `{/* DRAFT: Replace with your own article. */}\n\n## The question\n\nWhat prompted this article?\n\n## Why it matters\n\nWhat are the competing considerations?\n\n## What I've learned\n\nWhat changed in your understanding?\n\n{/* Optional: after the conclusion and before Further reading, add three author-written questions. Replace these prompts before uncommenting.
+<QuestionsWorthAsking
+  intro="Optional context for the reader."
+  questions={["TODO: First question?", "TODO: Second question?", "TODO: Third question?"]}
+/>
+*/}\n\n## References\n\nAdd relevant, verifiable sources.\n`
       : `{/* DRAFT: Not an accepted speaking engagement. */}\n\n## Talk overview\n\nWhat is the central argument?\n\n## Key takeaways\n\nWhat should attendees learn?\n\n## Event details\n\nAdd event information when confirmed.\n\n## Resources\n\nAdd references, slides or recordings.\n`;
   const created = [];
   try {
