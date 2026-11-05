@@ -1,3 +1,4 @@
+import BackToTop from '../../../components/back-to-top';
 import ArticleAuthor from '../../../components/article-author';
 import TopicChips from '../../../components/topic-chips';
 import { notFound } from 'next/navigation';
@@ -75,6 +76,7 @@ export default async function Article({
   const related = relatedEntries(a, all);
   return (
     <>
+      {a.body.split(/\s+/).length >= 600 && <BackToTop />}
       <article>
         <header className="article-header shell">
           <Link className="back-link" href="/blog">
@@ -88,7 +90,9 @@ export default async function Article({
               </span>
             )}
           </div>
-          <h1>{a.title}</h1>
+          <h1 id="article-top" tabIndex={-1}>
+            {a.title}
+          </h1>
           <p className="article-standfirst">{a.description}</p>
           <div className="article-byline">
             <span>By Adam Turner</span>
@@ -119,7 +123,7 @@ export default async function Article({
               </p>
             </aside>
           )}
-          <ContentBody body={a.body} extension={a.extension} />
+          <ContentBody body={a.body} extension={a.extension} navigation />
           {!a.draft && !isScheduled(a.publishedAt) && (
             <>
               <ArticleAuthor slug={a.slug} />

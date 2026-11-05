@@ -1,3 +1,4 @@
+import { remarkArticleNavigation } from '../lib/article-navigation.mjs';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -35,6 +36,7 @@ const QuestionsWorthAsking = component(
   {},
 );
 const ContentBody = component('components/content-body.tsx', {
+  '../lib/article-navigation.mjs': { remarkArticleNavigation },
   './questions-worth-asking': { default: QuestionsWorthAsking },
   'next/link': {
     default: ({ children, ...props }) => createElement('a', props, children),
@@ -165,3 +167,38 @@ test('reflection questions render through MDX once, in author order', async () =
   ])
     assert.throws(() => QuestionsWorthAsking({ questions }), /three/);
 });
+
+for (const extension of ['.md', '.mdx']) {
+  test(`article navigation uses real headings and stable unique links in ${extension}`, async () => {
+    const body =
+      'Opening narrative.\n\n## First *idea*\n\nWords.\n\n## Repeated\n\n## Repeated\n\n## Final\n';
+    const stream = await renderToReadableStream(
+      await ContentBody({ body, extension, navigation: true }),
+    );
+    const html = await new Response(stream).text();
+    assert.match(html, /<nav[^>]+aria-label="On this page"/);
+    assert.ok(html.indexOf('Opening narrative.') < html.indexOf('<nav'));
+    assert.ok(html.indexOf('<nav') < html.indexOf('<h2'));
+    for (const id of [
+      'section-first-idea',
+      'section-repeated',
+      'section-repeated-2',
+      'section-final',
+    ]) {
+      assert.ok(html.includes(`href="#${id}"`));
+      assert.ok(html.includes(`id="${id}"`));
+    }
+    const short = await renderToReadableStream(
+      await ContentBody({
+        body: 'Intro\n\n## Only one',
+        extension,
+        navigation: true,
+      }),
+    );
+    assert.doesNotMatch(await new Response(short).text(), /<nav/);
+    const normal = await renderToReadableStream(
+      await ContentBody({ body, extension }),
+    );
+    assert.doesNotMatch(await new Response(normal).text(), /<nav/);
+  });
+}

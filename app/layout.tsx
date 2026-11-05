@@ -59,7 +59,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Link>
           <Navigation hasSpeaking={hasSpeaking} />
         </header>
-        <main id="main">{children}</main>
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
         <footer className="site-footer">
           <div className="shell">
             <div className="footer-top">

@@ -1,3 +1,4 @@
+import { remarkArticleNavigation } from '../lib/article-navigation.mjs';
 import QuestionsWorthAsking from './questions-worth-asking';
 import Link from 'next/link';
 import { articles } from '../lib/content';
@@ -40,9 +41,11 @@ function Figure({
 export default async function ContentBody({
   body,
   extension,
+  navigation = false,
 }: {
   body: string;
   extension: string;
+  navigation?: boolean;
 }) {
   function ArticleLink({
     slug,
@@ -69,12 +72,21 @@ export default async function ContentBody({
           }}
           options={{
             blockJS: false,
-            mdxOptions: { remarkPlugins: [remarkGfm, remarkContentLinks] },
+            mdxOptions: {
+              remarkPlugins: [
+                remarkGfm,
+                remarkContentLinks,
+                ...(navigation ? [remarkArticleNavigation] : []),
+              ],
+            },
           }}
         />
       ) : (
         <Markdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={[
+            remarkGfm,
+            ...(navigation ? [remarkArticleNavigation] : []),
+          ]}
           components={{ a: ContentLink, table: Table }}
         >
           {body}
