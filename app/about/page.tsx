@@ -5,7 +5,7 @@ import PersonalImage from '../../components/personal-image';
 export const metadata = {
   title: 'About',
   description:
-    'Meet Adam Turner, a Senior Software Engineering Manager in financial services interested in how people, engineering and organisations come together to make things happen.',
+    'Meet Adam Turner, a Senior Software Engineering Manager exploring engineering leadership, technology change, people development and organisational strategy.',
   alternates: { canonical: '/about' },
 };
 export default function About() {
