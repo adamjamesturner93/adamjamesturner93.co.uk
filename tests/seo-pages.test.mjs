@@ -200,3 +200,25 @@ test('internal link checker detects broken routes/fragments and never fetches ex
   );
   assert.equal(calls.length, before);
 });
+
+test('deployment traces reject missing runtime content even when local HTML works', async () => {
+  const { missingTraceFiles } = await import('../scripts/seo/traces.mjs');
+  const trace =
+    '/project/.next/server/app/blog/[slug]/opengraph-image/route.js.nft.json';
+  const required = [
+    '/project/content/blog/article.mdx',
+    '/project/public/images/blog/cover.webp',
+  ];
+  assert.deepEqual(missingTraceFiles(trace, [], required), required);
+  assert.deepEqual(
+    missingTraceFiles(
+      trace,
+      [
+        '../../../../../../content/blog/article.mdx',
+        '../../../../../../public/images/blog/cover.webp',
+      ],
+      required,
+    ),
+    [],
+  );
+});

@@ -1,5 +1,14 @@
 import { policy } from './lib/site.mjs';
 const config = {
+  // Runtime content discovery uses directory reads that tracing cannot infer.
+  // Validation also checks cover files, so include both in server bundles.
+  outputFileTracingIncludes: {
+    '/*': [
+      './content/**/*',
+      './public/images/blog/**/*',
+      './public/images/speaking/**/*',
+    ],
+  },
   allowedDevOrigins: ['**.ngrok-free.app', '**.ngrok.app', '**.ngrok.io'],
   async redirects() {
     return [

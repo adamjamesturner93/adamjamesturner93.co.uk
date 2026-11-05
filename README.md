@@ -195,6 +195,7 @@ not constitute answered FAQs, so no FAQ schema is generated for them.
 ### Local publication and social audits
 
 - `npm run seo:check`: builds production and checks all expected published pages.
+- The audit also verifies that social-image server traces include runtime content and cover files. A local server can read repository files even when they are missing from Vercel's deployment bundle; missing trace entries fail the audit. After deployment, check the public image URL as well, since hosting redirects and platform behaviour are outside the local audit.
 - `npm run seo:preview -- --slug feedback-isnt-a-gift-its-a-dance`: audits an unpublished article without changing its front matter.
 - `npm run seo:preview -- --slug making-annual-reviews-valuable`: previews the published article using the same local preview process.
 - Add `-- --json` to `seo:check` for structured output; build logs go to stderr.

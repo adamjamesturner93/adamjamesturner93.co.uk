@@ -6,6 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { loadCollection, visibleEntries } from '../../lib/content/core.mjs';
 import { site } from '../../lib/site.mjs';
+import { checkSocialImageTraces } from './traces.mjs';
 import {
   analysePage,
   sitemapUrls,
@@ -132,6 +133,7 @@ export async function checkPages({ slug } = {}) {
     const [code] = await once(build, 'exit');
     if (code !== 0 || interrupted)
       throw Error('Audit build failed or interrupted');
+    await checkSocialImageTraces(workspace);
     const socket = createServer();
     socket.listen(0, '127.0.0.1');
     await once(socket, 'listening');

@@ -1,67 +1,251 @@
 ---
-title: Data Migrations - moving more than just data
+title: 'Data migrations: moving more than just data'
 slug: data-migrations-moving-more-than-just-data
 description: >-
-  Why a successful migration depends on business meaning, operational readiness
-  and ownership, as well as moving records.
-date: '2026-11-01'
+  Two rollbacks, one successful migration. What the experience taught me
+  about engineering decisions, business risk and protecting customers.
+date: '2026-11-05'
 category: technology-strategy
-relatedArticles:
-  - diversity-bringing-together-ideas-experiences-and-culture
-  - making-annual-reviews-valuable
+tags:
+  - data-migration
+  - change-management
+  - risk-management
+  - stakeholder-management
+relatedArticles: []
 draft: true
 coverImage: /images/blog/data-migrations-moving-more-than-just-data.webp
 coverImageAlt: 'Glowing digital folders and data paths moving between server infrastructure and a cloud symbol.'
 ---
 
-A data migration can look deceptively tidy on a programme plan. Extract the records, transform them, load the destination and reconcile the totals. There are difficult technical problems in that sequence, but the sequence itself is reassuringly clear.
+I've recently been reflecting on one of the more interesting experiences I've had delivering complex data migrations.
 
-The complication is that a business does not operate on records alone. It operates on the meaning attached to them, the decisions they support and the processes that have grown around them. Moving the values without understanding those relationships can produce a technically successful migration that leaves people unable to do their jobs.
+On the way to a successful migration, I had to communicate the decision to roll back. Twice.
 
-## The meaning travels too
+Both decisions delayed something the business was keen to deliver. Yet when we eventually celebrated the successful migration, I was congratulated not just on the outcome, but on those earlier decisions to protect the business and its customers.
 
-Imagine moving customer records between two platforms. Both have a field called “active”. That looks like a straightforward mapping until someone asks what active actually means.
+What particularly stood out was how much people valued the openness around those decisions.
 
-One platform might mean that an agreement is open. Another might mean that a customer has completed verification. A reporting team might use the same word for recent activity. None of those definitions is necessarily wrong, but treating them as interchangeable creates a new business rule by accident.
+It reinforced something I've come to appreciate through delivering technology change: **a successful data migration isn't simply about moving data or meeting a deadline. It's about enabling the business to move forward safely.**
 
-This is where a mapping document becomes a record of decisions. What does the value represent? Who can approve the interpretation? What happens to records that do not fit? Engineering can expose ambiguity and explain the options, but it should not silently become the owner of every business definition.
+## There's more to moving data than you might think
 
-The awkward records are often the most useful ones to examine early. They reveal assumptions that the happy path conceals.
+On the surface, migrating data sounds relatively straightforward. Extract it from one system, transform it into the right format, load it into another system and check that everything arrived.
 
-## Reconciliation needs to answer a business question
+In reality, there's a huge amount for engineering teams to consider, particularly when those systems support live business operations.
 
-Matching record counts is useful. It is also possible to move every record and still get the outcome wrong.
+For example:
 
-A stronger reconciliation approach asks what people need to trust afterwards. Can an operational colleague find the right customer history? Do balances reconcile at the relevant level? Does a downstream report classify the same population in the expected way? Where a definition deliberately changes, can that difference be explained?
+- **Data mapping and integrity:** Does information retain its meaning and relationships in the new system? How do we prove nothing important has been lost, duplicated or incorrectly transformed?
+- **Performance and availability:** Can the migration finish within the available window without disrupting business operations? And can the target system handle the expected workload afterwards?
+- **Security and access:** Is information protected throughout the process? Will the right people have access to what they need, without exposing sensitive data?
+- **Dependencies and recovery:** What other systems and processes rely on this information? How do we validate that they still work, and can we safely reverse the migration if necessary?
 
-These checks need named owners and agreed tolerances. A discrepancy is much harder to resolve during a cutover if nobody has decided which system is authoritative or who can accept an exception.
+Each of these can involve substantial engineering, testing and coordination.
 
-There is a trade-off here. Testing every possible business interaction may be impractical. Counting rows alone may be dangerously narrow. The useful middle ground is to identify the decisions and services with the greatest consequences, then build evidence around those.
+And simply matching the number of records between two systems isn't enough to demonstrate that a migration has worked.
 
-## Cutover changes how people work
+Imagine moving customer information into a new sales CRM. Every record arrives, the counts reconcile and the technical checks are green.
 
-Consider a hypothetical migration completed over a weekend. The new platform is available on Monday, the records are present, and the technical team declares success. Then an operations team discovers that a familiar exception report no longer exists.
+Yet sales colleagues can't find their customers, opportunities have the wrong statuses, or information is associated with the wrong account.
 
-The missing report may never have appeared in the formal application inventory. It might have been a spreadsheet maintained by someone who understood a particular process exceptionally well. Its absence still matters.
+Technically, the data has moved. But the business may be unable to use it properly.
 
-Discovering these dependencies requires conversations with the people using the information, alongside tracing integrations and scheduled jobs. Training, support arrangements, access permissions and escalation routes belong in the migration plan too. They are part of making the change usable.
+**Moving data is only part of the challenge. Preserving its meaning and usefulness is what really matters.**
 
-## Recovery is more than restoring a backup
+## You tell me. I tell you. Do we agree?
 
-“Roll back if necessary” is reassuring until the destination has accepted new transactions. At that point, returning to the source may mean reconciling two different histories.
+One of the approaches I've found most valuable is to start discussions with the business, not the technology.
 
-A recovery plan should identify when reversal remains straightforward, when it becomes expensive, and when a forward correction is safer. Those boundaries affect who needs to be available and what evidence is required before proceeding.
+When I'm speaking with business colleagues, I don't want to begin by talking about data structures, migration scripts or technical architecture. I want to understand their world.
 
-Rehearsals help turn assumptions into observations. They should exercise decisions and handovers as well as transformation scripts: who notices a failed check, who pauses the process, and who explains the consequences? A rehearsal that only proves the load finishes has tested a narrower problem than the organisation will face.
+Take the example of migrating a sales CRM.
 
-## Finish with ownership, not just a transfer
+How do colleagues use it? Which activities are critical? What happens if certain information is missing or incorrect? When can the business tolerate disruption, and when would that become unacceptable?
 
-Migration work can uncover years of unresolved data-quality issues. There is rarely unlimited time to repair them all. The practical question is which defects must be corrected now, which can be accepted explicitly, and who will own the remaining work.
+Most importantly, what would constitute an acceptable issue, and what would make it unsafe to proceed?
 
-That ownership needs to survive the programme. Otherwise the new platform inherits the uncertainty while the people who understood it move on.
+Once we've understood those priorities, I work with analysts and engineers to translate them into technical requirements and measurable success criteria.
 
-Before calling a migration complete, ask: **what can the business now do reliably, and who is responsible when the data does not behave as expected?** A convincing answer brings together technical correctness, operational readiness and clear decisions about meaning. That is a much more useful finish line than “the load completed”.
+For example, if sales colleagues need to continue working with existing customers, we might validate customer relationships, lead records, ownership, opportunity statuses, permissions and key integrations.
+
+But the process shouldn't stop there.
+
+We then play those technical criteria back to the business, explaining what we're checking and why it matters to their colleagues and customers.
+
+**You tell me. I tell you. Do we agree?**
+
+This two-way translation serves two important purposes.
+
+Firstly, it forces engineering teams to understand the business they're supporting, rather than simply executing a technical task.
+
+Secondly, it helps business colleagues understand why engineering is making particular recommendations and what the consequences might be if those checks aren't met.
+
+It's also an opportunity to challenge assumptions on both sides. Perhaps engineering has misunderstood the importance of a particular process, or the business hasn't appreciated the impact of a technical dependency.
+
+By working through those differences before the migration, we develop a shared understanding of what success actually looks like.
+
+And that becomes incredibly valuable when things don't go to plan.
+
+## Agreeing the red lines
+
+No complex migration is entirely without risk, and expecting absolute perfection isn't always realistic.
+
+What matters is understanding the issues, their consequences and whether they're acceptable.
+
+For example, during a recent migration involving a large dataset, we identified a small number of duplicate notes.
+
+After investigating the issue, we determined that those duplicates had no business or customer impact, and the issue was considered acceptable.
+
+But imagine those had been duplicated customer records or payment records instead.
+
+Even if the number of affected records were identical, the consequences could have been completely different.
+
+**The number of defects doesn't necessarily tell us how serious a problem is. We need to understand what those defects actually mean.**
+
+This is why agreeing our red lines in advance is so important.
+
+In a sales CRM, one such red line might be that every customer must retain the correct relationships to their original lead and sales representative.
+
+If those relationships are missing, the customer records might still exist, but colleagues could lose important information about where customers came from and who is responsible for them.
+
+Some issues can be accepted with appropriate controls and a plan to resolve them. Others require investigation or correction before proceeding. And some should stop the migration altogether.
+
+Making those distinctions before we're under pressure gives everyone a much clearer basis for deciding whether to proceed.
+
+## Two rollbacks, two very different risks
+
+The two rollbacks I mentioned earlier are useful examples because they were triggered by quite different problems.
+
+### The first: protecting business hours
+
+During the first migration attempt, we encountered a performance issue.
+
+By Sunday morning, I had to consider not only the problem itself but how much time remained before the business needed its systems back on Monday.
+
+We could have continued investigating and attempting to resolve the issue. But every additional hour would have reduced the time available to back out safely if we couldn't fix it.
+
+I made the decision to back out while we still had sufficient time to protect Monday's business operations.
+
+**Sometimes the most important decision isn't whether you can fix the problem. It's knowing when you need to stop trying so you can still recover safely.**
+
+That's something I'd encourage anyone planning a major migration to think about in advance. Alongside the technical go/no-go criteria, we should agree the latest point at which we can safely decide to back out.
+
+Afterwards, we addressed the performance problems and made improvements before the next attempt.
+
+### The second: protecting data integrity
+
+The second attempt presented a different challenge.
+
+After migrating customer records, we identified that some customers had lost their relationships to both their lead records and their sales representative records.
+
+The customer information had moved, but important connections between records hadn't been preserved.
+
+This was precisely the kind of data-integrity red line we'd discussed earlier. The records might exist in the new system, but if colleagues can't reliably understand where a customer came from or who is responsible for them, the data is no longer supporting the business as intended.
+
+Once again, the recommendation was to back out rather than proceed with that unresolved risk.
+
+The subsequent investigation uncovered a quirk in the source database mapping. Understanding and addressing that issue allowed us to prepare for another attempt.
+
+Two different technical problems, both with potentially significant business consequences. And in both cases, the decision to back out gave us the opportunity to correct the problem before exposing the business to those risks.
+
+## The same conversation, whether it's go or no-go
+
+Something I think is particularly important is that my communication approach was the same for both rollbacks. In fact, it's the same approach I use when recommending that a migration should proceed.
+
+For these migrations, the business owner provided the business sign-off.
+
+My responsibility was to explain the technical position in terms of what it meant for their business and customers, present the options and make a recommendation.
+
+There were essentially three possible courses of action:
+
+1. **Accept the risk and proceed.** If an issue is understood, sits within acceptable limits and doesn't breach mandatory controls, the business may decide that proceeding is appropriate.
+2. **Pause and investigate.** If there's sufficient time to understand or resolve an issue, we can stop, investigate and decide whether to continue.
+3. **Back out.** If the risk is unacceptable, or there isn't enough time left to investigate and recover safely, we return to the previous position.
+
+The conversation is the same regardless of which option I recommend: here's what we've found, here's what it means for the business, these are our options and this is my recommendation.
+
+For the first rollback, the critical consideration was protecting Monday's business operations. For the second, it was preserving the integrity and usefulness of customer information.
+
+Different problems, but the same approach to making an informed decision.
+
+There's an important distinction here between engineering accountability and business accountability.
+
+**As an engineering leader, my job isn't to make product or business decisions on behalf of the people who own those outcomes.**
+
+My responsibility is to provide clear technical assessments and recommendations so the appropriate business or product owner can make an informed decision.
+
+Not every risk can simply be accepted. Mandatory security, legal, data protection and other controls still apply, with their own approval requirements.
+
+And engineering remains accountable for the evidence and quality of its recommendations.
+
+But where there's a legitimate business decision to make, I want the person accountable for that outcome to understand the options and consequences, rather than simply accepting a technical judgement they can't meaningfully challenge.
+
+## Why openness matters
+
+There's often enormous pressure to deliver a migration on a particular date.
+
+Legacy technology may be expensive to maintain, other programmes may depend on the change, and colleagues may have spent considerable time preparing. Delays have real consequences.
+
+That's why I found the response to our two rollbacks so encouraging.
+
+Neither decision was something we wanted, and both were disappointing at the time. Yet when we eventually completed the migration successfully, those earlier decisions were recognised as examples of protecting the business and its customers.
+
+I believe being open about the issues, the risks and our recommendations made a real difference.
+
+It challenged an assumption I think we can sometimes make in engineering: that business leaders will always prioritise delivery dates above everything else.
+
+In my experience, when business leaders understand the consequences and trust the recommendations, they're often far more supportive of difficult decisions than the pressure around the deadline might suggest.
+
+Of course, that doesn't remove our responsibility to investigate what went wrong and improve before trying again.
+
+But I think it changes how we should view a decision to stop.
+
+**A rollback isn't automatically a failure. Sometimes it's evidence that the controls we've put in place are doing exactly what they're supposed to do.**
+
+## When is the migration actually finished?
+
+Even after a successful cutover, it's worth challenging what we mean by "finished".
+
+The data has moved and the new system is available. But can colleagues carry out their work? Are integrations functioning? Can customers continue to be served? Is the platform stable and supported?
+
+And are we confident enough to stop relying on the old one?
+
+Migrations are rarely undertaken simply because an organisation wants its data somewhere different.
+
+There's usually a wider objective: reducing costs, improving resilience, modernising technology, simplifying processes or enabling new capabilities.
+
+Those benefits don't automatically materialise when the records arrive.
+
+The new system needs to work in practice, people need to be able to use it, and the old technology eventually needs to be retired.
+
+Until then, we may have completed the technical migration without delivering everything we originally set out to achieve.
+
+## More than just data
+
+I genuinely enjoy the technical challenge of migrations. There's something satisfying about solving difficult problems and seeing a complex transition finally come together.
+
+But these experiences have reinforced how much successful delivery depends on the people, decisions and relationships around the technology.
+
+It requires engineers who understand the systems, colleagues who understand the business, and leaders who can translate between the two.
+
+Deadlines matter, and missing them shouldn't be taken lightly. But I think we should be just as willing to recognise a well-made decision to stop as we are a successful decision to proceed.
+
+**The real measure of success isn't simply whether we moved the data on time. It's whether we protected the people who depend on it and enabled the business to move forward.**
+
+<QuestionsWorthAsking
+  intro="Whether you're involved in the technical delivery or the business decision-making, here are three questions worth exploring."
+  questions={[
+    'Do we understand what would make us stop the migration, and have we agreed those red lines before we start?',
+    'Can we explain our technical recommendations in terms of what they mean for the business and its customers?',
+    'How will we know the migration has delivered its intended value, rather than simply moving the data?',
+  ]}
+/>
+
+---
 
 ## Further reading
 
-- [Evolutionary Database Design — Pramod Sadalage and Martin Fowler](https://martinfowler.com/articles/evodb.html). A technical companion on repeatable, version-controlled database change; broader organisational considerations above are the argument of this article.
+- [Microsoft — Plan your migration](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/migrate/plan-migration) — Migration sequencing, technical dependencies and planning.
+- [Microsoft — Execute migration to cloud](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/migrate/execute-migration) — Stakeholder preparation, rollback criteria, readiness and cutover.
+- [AWS — Cutover stage](https://docs.aws.amazon.com/prescriptive-guidance/latest/best-practices-migration-cutover/cutover-stage.html) — Cutover approaches, performance testing, data consistency and rollback planning.
+- [ICO — Accuracy principle](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/data-protection-principles/a-guide-to-the-data-protection-principles/accuracy/) — Responsibilities for maintaining accurate personal data.
