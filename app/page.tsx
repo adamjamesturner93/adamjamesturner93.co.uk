@@ -1,15 +1,17 @@
 import { pageMetadata } from '../lib/page-metadata';
-import { site } from '../lib/site.mjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import List from './list';
 import { articles } from '../lib/content';
 import PersonalImage from '../components/personal-image';
-export const metadata = pageMetadata(
-  'Adam Turner — Engineering, leadership & ideas',
-  site.description,
-  '/',
-);
+export const metadata = {
+  ...pageMetadata(
+    'Adam Turner | Engineering Leadership Beyond the Code',
+    'Thoughts on engineering leadership beyond the code: people, business strategy, technology decisions and what it takes to lead teams through change.',
+    '/',
+  ),
+  title: { absolute: 'Adam Turner | Engineering Leadership Beyond the Code' },
+};
 export default function Home() {
   return (
     <>
@@ -20,25 +22,20 @@ export default function Home() {
             Engineering / Leadership / Ideas
           </p>
           <h1>
-            The interesting problems rarely stop at{' '}
-            <span className="text-blue">the code.</span>
+            Engineering leadership{' '}
+            <span className="text-blue">beyond the code.</span>
           </h1>
           <div className="hero-intro">
             <p>
-              Hi, I’m Adam. I’m a software engineering leader in financial
-              services, working on everything from modernising established
-              technology to bringing teams together to deliver complex change.
-            </p>
-            <p>
-              I enjoy solving difficult problems, helping people grow and
-              figuring out how we can do things better. This is where I share
-              some of the ideas, experiences and lessons I’m picking up along
-              the way.
+              I’m Adam, a Senior Software Engineering Manager. I write about the
+              people, business decisions and challenges behind leading
+              technology teams, drawing on my experiences of what works, what
+              doesn’t and what I’ve learned along the way.
             </p>
           </div>
           <div className="hero-actions">
             <Link className="button" href="/blog">
-              Explore the blog <span aria-hidden="true">↗</span>
+              Read my writing <span aria-hidden="true">↗</span>
             </Link>
             <Link className="text-link" href="/about">
               More about me <span aria-hidden="true">→</span>
@@ -71,9 +68,9 @@ export default function Home() {
           </Link>
         </div>
         <p className="section-description">
-          Engineering leadership comes with plenty of interesting questions, and
-          not many straightforward answers. I write about the challenges,
-          decisions and ideas that make me stop and think.
+          From developing people to making commercial judgements, engineering
+          leadership comes with plenty of questions. These are the experiences
+          and decisions that make me stop and think.
         </p>
         <List items={articles().slice(0, 3)} />
       </section>

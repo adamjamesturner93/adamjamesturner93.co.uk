@@ -3,11 +3,14 @@ import ContentLink from '../../components/content-link';
 import Link from 'next/link';
 import { site } from '../../lib/site.mjs';
 import PersonalImage from '../../components/personal-image';
-export const metadata = pageMetadata(
-  'About',
-  'Meet Adam Turner, a Senior Software Engineering Manager exploring engineering leadership, technology change, people development and organisational strategy.',
-  '/about',
-);
+export const metadata = {
+  ...pageMetadata(
+    'About Adam Turner | Engineering Leader & Writer',
+    'Meet Adam Turner, a Senior Software Engineering Manager writing about the business, people and decisions behind effective engineering leadership.',
+    '/about',
+  ),
+  title: { absolute: 'About Adam Turner | Engineering Leader & Writer' },
+};
 export default function About() {
   return (
     <>
@@ -22,14 +25,17 @@ export default function About() {
           </h1>
           <div className="intro about-introduction">
             <p>
-              I’m a Senior Software Engineering Manager working in financial
-              services. I enjoy technology, but what really interests me is how
-              people, engineering and organisations come together to make things
-              happen.
+              I’m Adam, a Senior Software Engineering Manager working in
+              financial services.
             </p>
             <p>
-              I’ve learned that the most interesting challenges rarely have a
-              purely technical solution.
+              Over the years, I’ve become increasingly interested in the parts
+              of engineering leadership that happen outside the codebase.
+            </p>
+            <p>
+              The technology matters, of course. But so do the people building
+              it, the decisions we make, the risks we’re prepared to take and
+              the business we’re ultimately trying to support.
             </p>
           </div>
         </div>
@@ -62,9 +68,10 @@ export default function About() {
         </div>
         <div className="about-copy">
           <p>
-            A lot of my career has involved working with established technology,
-            leading engineering teams and delivering change in environments
-            where there are plenty of moving parts.
+            I’ve had the opportunity to lead teams through complex deliveries
+            and technology change. Some of my most valuable lessons have come
+            from situations where the technically right answer wasn’t
+            necessarily the whole answer.
           </p>
           <p>
             Modernising technology sounds relatively straightforward when you’re
@@ -85,8 +92,9 @@ export default function About() {
             problem in the first place.
           </p>
           <p>
-            Increasingly, I’m interested in how those individual decisions
-            connect to the wider strategy of an organisation.
+            That’s what I enjoy exploring here: the business behind engineering
+            leadership, the challenges of leading people and what it means to
+            become a more rounded leader.
           </p>
         </div>
         <div className="about-label">
@@ -190,8 +198,8 @@ export default function About() {
         <div>
           <h2>Interested in what I’m thinking about?</h2>
           <p>
-            Take a look at the blog for my latest thoughts on engineering,
-            leadership and technology.
+            Take a look at the blog for my latest reflections on people,
+            business strategy and the decisions behind engineering leadership.
           </p>
         </div>
         <Link className="button" href="/blog">
